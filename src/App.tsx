@@ -58,8 +58,23 @@ function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, 
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  if (user) return <Navigate to="/student/dashboard" replace />; // Default to student dashboard
+  const { user, profile } = useAuth();
+  
+  if (user && profile) {
+    if (profile.role === 'psychologist') {
+      return <Navigate to="/psychologist/dashboard" replace />;
+    }
+    if (profile.role === 'admin') {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
+    return <Navigate to="/student/dashboard" replace />;
+  }
+  
+  // If user is logged in but profile not loaded yet, wait (or show loading). 
+  // However, AuthContext loading state usually handles this at app level if we wanted.
+  // For now, if just 'user' exists but no profile, let them stay or redirect to a default.
+  // Better to rely on Profile being loaded.
+  
   return <>{children}</>;
 }
 

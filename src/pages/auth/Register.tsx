@@ -24,7 +24,11 @@ export default function Register() {
 
     try {
       await signUp(email, password, role, name);
-      navigate('/dashboard');
+      if (role === 'psychologist') {
+        navigate('/psychologist/dashboard');
+      } else {
+        navigate('/student/dashboard');
+      }
     } catch (err: unknown) {
       const error = err as Error;
       setError(error.message || 'Failed to create account');

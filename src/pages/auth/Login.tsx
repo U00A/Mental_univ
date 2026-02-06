@@ -23,7 +23,11 @@ export default function Login() {
 
     try {
       await signIn(email, password);
-      navigate('/dashboard');
+      // We let the auth state listener update the profile, then Redirect/PublicRoute handles it,
+      // or we can just navigate to a default and let the router fix it.
+      // Ideally, we wait for profile to load, but signIn logic doesn't return profile.
+      // We'll navigate to student dashboard as default, or root.
+      navigate('/student/dashboard'); // Temporary default, PublicRoute will correct this if they revisit login
     } catch (err: unknown) {
       const error = err as Error;
       setError(error.message || 'Failed to sign in');
@@ -37,7 +41,13 @@ export default function Login() {
     setLoading(true);
     try {
       await signInWithGoogle(role);
-      navigate('/dashboard');
+      // Navigation is now handled by the PublicRoute/AuthContext state change, 
+      // but explicitly navigating helps specific flows.
+      if (role === 'psychologist') {
+        navigate('/psychologist/dashboard');
+      } else {
+        navigate('/student/dashboard');
+      }
     } catch (err: unknown) {
       const error = err as Error;
       setError(error.message || 'Failed to sign in with Google');
