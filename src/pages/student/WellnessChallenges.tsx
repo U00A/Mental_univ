@@ -14,7 +14,7 @@ import Footer from '@/components/layout/Footer';
 
 export default function WellnessChallenges() {
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
-  const [showConfetti, setShowConfetti] = useState(false);
+
 
   const challenges = [
     {
@@ -62,8 +62,6 @@ export default function WellnessChallenges() {
       setCompletedTasks(prev => prev.filter(id => id !== taskId));
     } else {
       setCompletedTasks(prev => [...prev, taskId]);
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 3000);
     }
   };
 
