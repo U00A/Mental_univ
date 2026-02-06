@@ -12,7 +12,8 @@ import {
   LogOut, 
   User,
   Bell,
-  Trophy
+  Trophy,
+  Home
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import PanicHelper from '@/components/tools/PanicHelper';
@@ -26,6 +27,7 @@ export default function StudentLayout() {
   const [isPanicOpen, setIsPanicOpen] = useState(false);
 
   const navigation = [
+    { name: 'Home', href: '/', icon: Home },
     { name: 'Dashboard', href: '/student/dashboard', icon: LayoutDashboard },
     { name: 'Wellness', href: '/student/wellness', icon: Activity },
     { name: 'Psychologists', href: '/student/psychologists', icon: Users },
@@ -43,7 +45,7 @@ export default function StudentLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex flex-col lg:flex-row">
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
@@ -54,20 +56,20 @@ export default function StudentLayout() {
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-border transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:h-screen lg:sticky lg:top-0
+        fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-border transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:h-screen lg:sticky lg:top-0 shrink-0
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="h-full flex flex-col">
           {/* Logo */}
-          <div className="h-16 flex items-center gap-3 px-6 border-b border-border">
+          <Link to="/" className="h-16 flex items-center gap-3 px-6 border-b border-border hover:bg-gray-50 transition-colors">
             <img src="/images/logo.svg" alt="MindWell" className="h-8 w-8" />
             <span className="text-xl font-bold text-text">MindWell</span>
-          </div>
+          </Link>
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
             {navigation.map((item) => {
-              const isActive = location.pathname.startsWith(item.href);
+              const isActive = location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(item.href));
               return (
                 <Link
                   key={item.name}
@@ -111,7 +113,7 @@ export default function StudentLayout() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 bg-background">
         {/* Top Header */}
         <header className="h-16 bg-white/80 backdrop-blur-md border-b border-border sticky top-0 z-30 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -122,11 +124,18 @@ export default function StudentLayout() {
               <Menu className="w-6 h-6" />
             </button>
             <h1 className="text-lg font-semibold text-text hidden sm:block">
-              {navigation.find(n => location.pathname.startsWith(n.href))?.name || 'Dashboard'}
+              {navigation.find(n => location.pathname.startsWith(n.href) && n.href !== '/')?.name || 'Dashboard'}
             </h1>
           </div>
 
           <div className="flex items-center gap-4">
+            <button 
+              onClick={() => navigate('/')}
+              className="hidden md:flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-text-muted hover:text-primary hover:bg-gray-50 rounded-lg transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              Home
+            </button>
              <button 
                 onClick={() => setIsPanicOpen(true)}
                 className="btn btn-error btn-sm rounded-full px-4 animate-pulse shadow-lg shadow-red-200"
@@ -143,7 +152,7 @@ export default function StudentLayout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
           <Outlet />
         </main>
       </div>
