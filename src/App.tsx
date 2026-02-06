@@ -30,9 +30,18 @@ import SafetyPlan from '@/pages/student/SafetyPlan';
 import VideoCall from '@/pages/student/VideoCall';
 import Settings from '@/pages/student/Settings';
 import Insights from '@/pages/student/Insights';
+import Journal from '@/pages/student/Journal';
+import CopingTools from '@/pages/student/CopingTools';
+import MyFavorites from '@/pages/student/MyFavorites';
+import TherapyGoals from '@/pages/student/TherapyGoals';
+import WellnessCenter from '@/pages/student/WellnessCenter';
+import Booking from '@/pages/student/Booking';
 
 // Admin Pages
 import AdminDashboard from '@/pages/admin/Dashboard';
+import PsychologistDashboard from '@/pages/psychologist/Dashboard';
+import CrisisAlerts from '@/pages/admin/CrisisAlerts';
+import PsychologistCalendar from '@/pages/psychologist/Calendar';
 
 // Shared Components
 function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, allowedRole?: string }) {
@@ -78,18 +87,18 @@ export default function App() {
               <Route path="dashboard" element={<Dashboard />} />
               
               {/* Wellness & Tools */}
-              <Route path="wellness" element={<PlaceholderPage title="Wellness Center" description="Mood graphs, sleep tracking, and progress visualization." />} />
-              <Route path="journal" element={<PlaceholderPage title="Journal & Goals" description="Your private space for reflection and growth." />} />
+              <Route path="wellness" element={<WellnessCenter />} />
+              <Route path="journal" element={<Journal />} />
               <Route path="mood" element={<MoodTracker />} />
-              <Route path="goals" element={<PlaceholderPage title="Therapy Goals" />} />
+              <Route path="goals" element={<TherapyGoals />} />
               <Route path="garden" element={<PlaceholderPage title="Mindfulness Garden" />} />
               
               {/* Psychologists & Booking */}
               <Route path="psychologists" element={<Psychologists />} />
               <Route path="psychologists/:id" element={<PsychologistProfile />} />
-              <Route path="book/:psychologistId" element={<PlaceholderPage title="Booking" />} />
+              <Route path="book/:psychologistId" element={<Booking />} />
               <Route path="appointments" element={<Appointments />} />
-              <Route path="favorites" element={<PlaceholderPage title="My Favorites" />} />
+              <Route path="favorites" element={<MyFavorites />} />
               
               {/* Communication */}
               <Route path="messages" element={<Messages />} />
@@ -105,7 +114,7 @@ export default function App() {
               {/* Resources */}
               <Route path="resources" element={<Resources />} />
               <Route path="insights" element={<Insights />} />
-              <Route path="coping" element={<PlaceholderPage title="Coping Tools" />} />
+              <Route path="coping" element={<CopingTools />} />
               <Route path="learn" element={<PlaceholderPage title="Mental Health 101" />} />
               <Route path="challenges" element={<PlaceholderPage title="Wellness Challenges" />} />
               
@@ -121,10 +130,10 @@ export default function App() {
             {/* Psychologist Portal */}
             <Route path="/psychologist" element={<ProtectedRoute allowedRole="psychologist"><PsychologistLayout /></ProtectedRoute>}>
                <Route index element={<Navigate to="/psychologist/dashboard" replace />} />
-               <Route path="dashboard" element={<PlaceholderPage title="Psychologist Dashboard" />} />
+               <Route path="dashboard" element={<PsychologistDashboard />} />
                <Route path="patients" element={<PlaceholderPage title="My Patients" />} />
-               <Route path="calendar" element={<PlaceholderPage title="Calendar" />} />
-               <Route path="messages" element={<PlaceholderPage title="Messages" />} />
+<Route path="calendar" element={<PsychologistCalendar />} />
+                <Route path="messages" element={<PlaceholderPage title="Messages" />} />
                <Route path="education" element={<PlaceholderPage title="Professional Development" />} />
                <Route path="earnings" element={<PlaceholderPage title="Earnings" />} />
                <Route path="settings" element={<PlaceholderPage title="Settings" />} />
@@ -138,7 +147,7 @@ export default function App() {
               <Route path="users" element={<PlaceholderPage title="User Management" />} />
               <Route path="psychologist-applications" element={<PlaceholderPage title="Applications" />} />
               <Route path="moderation" element={<PlaceholderPage title="Content Moderation" />} />
-              <Route path="crisis-alerts" element={<PlaceholderPage title="Crisis Alerts" />} />
+              <Route path="crisis-alerts" element={<CrisisAlerts />} />
               <Route path="settings" element={<PlaceholderPage title="Platform Settings" />} />
             </Route>
 

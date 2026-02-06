@@ -150,6 +150,19 @@ export interface TherapyGoal {
   milestones: { label: string; completed: boolean }[];
   createdAt: Date;
   targetDate?: Date;
+  category?: string;
+}
+
+export interface JournalEntry {
+  id: string;
+  userId: string;
+  title: string;
+  content: string;
+  mood?: MoodEntry['mood'];
+  tags: string[];
+  isPrivate: boolean;
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 export interface SymptomEntry {
@@ -971,3 +984,51 @@ export async function getMatchedPsychologists(userId: string): Promise<Psycholog
   scored.sort((a, b) => b.score - a.score);
   return scored.filter(s => s.score > 0).map(s => s.psychologist);
 }
+
+// ============ JOURNAL ============
+
+export async function createJournalEntry(entry: Omit<JournalEntry, 'id' | 'createdAt'>): Promise<string> {
+  const docRef = await addDoc(collection(db, 'journalEntries'), {
+    ...entry,
+    createdAt: Timestamp.now(),
+  });
+  return docRef.id;
+}
+
+export async function getJournalEntries(userId: string, limit?: number): Promise<JournalEntry[]> {
+  let q = query(
+    collection(db, 'journalEntries'),
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc')
+  );
+  
+  if (limit) {
+    q = query(q, limitQuery(limit));
+  }
+  
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      createdAt: data.createdAt?.toDate(),
+      updatedAt: data.updatedAt?.toDate(),
+    } as JournalEntry;
+  });
+}
+
+export async function updateJournalEntry(entryId: string, updates: Partial<JournalEntry>): Promise<void> {
+  const docRef = doc(db, 'journalEntries', entryId);
+  await updateDoc(docRef, {
+    ...updates,
+    updatedAt: Timestamp.now(),
+  });
+}
+
+export async function deleteJournalEntry(entryId: string): Promise<void> {
+  await deleteDoc(doc(db, 'journalEntries', entryId));
+}
+
+// Need to import limit
+import { limit as limitQuery } from 'firebase/firestore';
