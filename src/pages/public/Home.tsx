@@ -20,6 +20,7 @@ export default function Home() {
   });
 
   useEffect(() => {
+    console.log("MindWell Platform v2 - Deployed via GitHub Actions");
     const fetchStats = async () => {
       try {
         // Try to get aggregated stats first
