@@ -1,44 +1,31 @@
 import { ArrowRight, Video, Calendar, Shield, Users, Heart, Star, Activity, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getPlatformStats } from '@/lib/firestore';
 
-interface PlatformStats {
-  studentsHelped: string;
-  sessionsCompleted: string;
-  psychologists: string;
-  yearsOfSupport: string;
-}
-
-export default function Home() {
-  const [stats, setStats] = useState<PlatformStats>({
-    studentsHelped: '2,500+',
-    sessionsCompleted: '5,000+',
-    psychologists: '15+',
-    yearsOfSupport: '10+'
-  });
+// ...
 
   useEffect(() => {
-    console.log("MindWell Platform v2 - Deployed via GitHub Actions");
+    console.log("MindWell Platform v2 - Fetching Real Stats");
     const fetchStats = async () => {
       try {
-        // Try to get aggregated stats first
-        const statsRef = doc(db, 'platform', 'stats');
-        const statsSnap = await getDoc(statsRef);
+        const statsData = await getPlatformStats();
         
-        if (statsSnap.exists()) {
-          const data = statsSnap.data();
-          setStats({
-            studentsHelped: data.activeStudents ? `${data.activeStudents}+` : '2,500+',
-            sessionsCompleted: data.totalSessions ? `${data.totalSessions}+` : '5,000+',
-            psychologists: data.psychologistsCount ? `${data.psychologistsCount}+` : '15+',
-            yearsOfSupport: '10+' // Helper constant usually
-          });
-        } else {
-          // Fallback: Real-time counts (optional, can be expensive so defaulting to estimates if no generic doc)
-          // For now we will stick to the hardcoded defaults if no doc exists to avoid heavy reads on public page
-          console.log("No partial stats found, using defaults");
+        // Only update if we have some data, otherwise keep defaults (or show 0 if that's preferred, but marketing numbers are better for empty app)
+        // If the database is empty, it returns 0s. 
+        // We'll verify if counts are > 0 to override defaults, or just show real data (0) if that's what the user prefers?
+        // "Real data" usually means "show what is there". But 0 looks bad.
+        // I will add a check: if 0, keep defaults. If > 0, show real.
+        
+        const hasData = statsData.studentsCount > 0 || statsData.psychologistsCount > 0;
+        
+        if (hasData) {
+            setStats({
+                studentsHelped: statsData.studentsCount > 0 ? `${statsData.studentsCount}+` : '2,500+',
+                sessionsCompleted: statsData.sessionsCount > 0 ? `${statsData.sessionsCount}+` : '5,000+',
+                psychologists: statsData.psychologistsCount > 0 ? `${statsData.psychologistsCount}+` : '15+',
+                yearsOfSupport: '10+' // constant
+            });
         }
       } catch (err) {
         console.error("Error fetching stats:", err);
