@@ -1,201 +1,243 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Calendar, MessageSquare, Heart, TrendingUp, Users, Clock, BookOpen, Shield, Loader2, Star, Sparkles } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import WellnessCheckin from '@/components/dashboard/WellnessCheckin';
-import { getAppointments, getMoodHistory, type Appointment, type MoodEntry } from '@/lib/firestore';
+import { Link, useNavigate } from 'react-router-dom';
+import { 
+  Calendar, 
+  MessageSquare, 
+  Heart, 
+  BookOpen, 
+  Shield, 
+  Users, 
+  Leaf, 
+  Trophy,
+  ArrowRight,
+  Sparkles,
+  Zap,
+  PlayCircle,
+  Brain
+} from 'lucide-react';
+import { getAppointments, type Appointment } from '@/lib/firestore';
 
-export default function Dashboard() {
-  const { profile } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [moodHistory, setMoodHistory] = useState<MoodEntry[]>([]);
-  const isStudent = profile?.role === 'student';
+export default function StudentDashboard() {
+  const { profile, user } = useAuth();
+  const navigate = useNavigate();
+  const [greeting, setGreeting] = useState('');
+  const [nextAppointment, setNextAppointment] = useState<Appointment | null>(null);
 
   useEffect(() => {
-    async function fetchData() {
-      if (!profile?.uid) return;
-      try {
-        setLoading(true);
-        const [apts, moods] = await Promise.all([
-          getAppointments(profile.uid, profile.role as 'student' | 'psychologist'),
-          getMoodHistory(profile.uid, 7)
-        ]);
-        setAppointments(apts);
-        setMoodHistory(moods);
-      } catch (err) {
-        console.error('Error fetching dashboard data:', err);
-      } finally {
-        setLoading(false);
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting('Good morning');
+    else if (hour < 18) setGreeting('Good afternoon');
+    else setGreeting('Good evening');
+
+    async function fetchNextAppointment() {
+      if (user) {
+        try {
+          const apts = await getAppointments(user.uid, 'student');
+          const upcoming = apts
+            .filter(a => a.status === 'confirmed' && new Date(a.date) >= new Date())
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+          setNextAppointment(upcoming[0] || null);
+        } catch (error) {
+          console.error("Failed to fetch appointments", error);
+        }
       }
     }
-    fetchData();
-  }, [profile]);
+    fetchNextAppointment();
+  }, [user]);
 
-  const upcomingApts = appointments.filter(a => a.status === 'confirmed' && new Date(a.date) >= new Date());
-  const latestMood = moodHistory[0]?.mood.replace('_', ' ') || 'No entry';
-
-  const moodData = moodHistory.slice().reverse().map(entry => ({
-    date: new Date(entry.date).toLocaleDateString([], { weekday: 'short' }),
-    score: entry.mood === 'very_good' ? 5 : entry.mood === 'good' ? 4 : entry.mood === 'neutral' ? 3 : entry.mood === 'bad' ? 2 : 1
-  }));
-
-  const stats = isStudent ? [
-    { icon: Calendar, label: 'Upcoming', value: upcomingApts.length.toString(), color: 'bg-green-100 text-green-700' },
-    { icon: MessageSquare, label: 'Messages', value: 'Live', color: 'bg-blue-100 text-blue-700' },
-    { icon: Heart, label: 'Latest Mood', value: latestMood, color: 'bg-pink-100 text-pink-700' },
-    { icon: TrendingUp, label: 'Total Sessions', value: appointments.filter(a => a.status === 'completed').length.toString(), color: 'bg-purple-100 text-purple-700' },
-  ] : [
-    { icon: Calendar, label: 'Today', value: upcomingApts.filter(a => new Date(a.date).toDateString() === new Date().toDateString()).length.toString(), color: 'bg-green-100 text-green-700' },
-    { icon: Users, label: 'Total Patients', value: Array.from(new Set(appointments.map(a => a.studentId))).length.toString(), color: 'bg-blue-100 text-blue-700' },
-    { icon: MessageSquare, label: 'Messages', value: 'Active', color: 'bg-pink-100 text-pink-700' },
-    { icon: Clock, label: 'Confirmed Hours', value: (upcomingApts.length * 0.5).toString(), color: 'bg-purple-100 text-purple-700' },
+  const features = [
+    {
+      title: 'Find a Psychologist',
+      desc: 'Browse verified professionals for therapy.',
+      icon: Users,
+      color: 'bg-blue-50 text-blue-600',
+      href: '/student/psychologists',
+      action: 'Book Now'
+    },
+    {
+      title: 'Wellness Tools',
+      desc: 'Mood tracking, journaling, and goals.',
+      icon: ActivityIcon, 
+      color: 'bg-green-50 text-green-600',
+      href: '/student/wellness',
+      action: 'Open Tools'
+    },
+    {
+      title: 'Community Groups',
+      desc: 'Connect with peers in safe spaces.',
+      icon: Leaf,
+      color: 'bg-teal-50 text-teal-600',
+      href: '/student/groups',
+      action: 'Join Discussion'
+    },
+    {
+      title: 'Resources',
+      desc: 'Articles, videos, and self-help guides.',
+      icon: BookOpen,
+      color: 'bg-purple-50 text-purple-600',
+      href: '/student/resources',
+      action: 'Learn'
+    },
+    {
+      title: 'Safety Plan',
+      desc: 'Your emergency coping strategy.',
+      icon: Shield,
+      color: 'bg-red-50 text-red-600',
+      href: '/student/safety-plan',
+      action: 'View Plan'
+    },
+    {
+      title: 'Challenges',
+      desc: 'Daily tasks to boost your mental health.',
+      icon: Trophy,
+      color: 'bg-orange-50 text-orange-600',
+      href: '/student/challenges',
+      action: 'Start Challenge'
+    }
   ];
-
-  const actions = isStudent ? [
-    { icon: Calendar, title: 'Book Appointment', desc: 'Schedule with a psychologist', href: '/student/psychologists', color: 'bg-primary' },
-    { icon: MessageSquare, title: 'Messages', desc: 'Chat with your psychologist', href: '/student/messages', color: 'bg-primary-light' },
-    { icon: Heart, title: 'Mood Tracker', desc: 'Track how you feel', href: '/student/mood', color: 'bg-accent' },
-    { icon: BookOpen, title: 'Resources', desc: 'Helpful articles & guides', href: '/student/resources', color: 'bg-primary-dark' },
-    { icon: Shield, title: 'Safety Plan', desc: 'Your personal safety plan', href: '/student/safety-plan', color: 'bg-primary' },
-  ] : [
-    { icon: Calendar, title: 'Schedule', desc: 'View appointments', href: '/psychologist/calendar', color: 'bg-primary' },
-    { icon: MessageSquare, title: 'Messages', desc: 'Patient messages', href: '/psychologist/messages', color: 'bg-primary-light' },
-    { icon: Users, title: 'Patients', desc: 'View all patients', href: '/psychologist/patients', color: 'bg-primary-dark' },
-  ];
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col bg-background">
-        <main className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-10 h-10 text-primary animate-spin" />
-        </main>
-      </div>
-    );
-  }
 
   return (
-    <div className="w-full animate-fade-in">
-      {/* Welcome */}
-      <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="badge badge-green flex items-center gap-1">
-              <Sparkles className="w-3 h-3" />
-              Premium Access
+    <div className="space-y-8 animate-fade-in">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-8 sm:p-10 shadow-xl shadow-indigo-900/20">
+        <div className="relative z-10 max-w-2xl">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold backdrop-blur-sm border border-white/10 uppercase tracking-wider">
+              Student Portal
             </span>
           </div>
-          <h1 className="text-4xl font-bold text-text mb-2 tracking-tight">
-            Welcome back, <span className="text-gradient">{profile?.displayName?.split(' ')[0] || 'User'}</span> 👋
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4 tracking-tight">
+            {greeting}, {profile?.displayName?.split(' ')[0] || 'Student'}!
           </h1>
-          <p className="text-lg text-text-muted">
-            {isStudent ? "Your journey towards mental clarity continues today." : "You have a productive day ahead with your patients."}
+          <p className="text-indigo-100 text-lg mb-8 leading-relaxed max-w-lg">
+            Ready to take care of your mind today? Choose a tool below or check your upcoming schedule.
           </p>
+          <div className="flex flex-wrap gap-4">
+            <button 
+              onClick={() => navigate('/student/wellness')}
+              className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-xl shadow-sm hover:bg-indigo-50 transition-colors flex items-center gap-2"
+            >
+              <Heart className="w-5 h-5" />
+              Check In
+            </button>
+            <button 
+              onClick={() => navigate('/student/journal')}
+              className="px-6 py-3 bg-indigo-500/30 text-white font-semibold rounded-xl backdrop-blur-md border border-white/20 hover:bg-indigo-500/40 transition-colors flex items-center gap-2"
+            >
+              <BookOpen className="w-5 h-5" />
+              Journal
+            </button>
+          </div>
         </div>
         
-        <div className="glass p-4 rounded-2xl flex items-center gap-4 border-white/40">
-          <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-            <Star className="w-6 h-6 text-amber-600" />
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/20 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4" />
+      </section>
+
+      {/* Status Bar: Next Appointment & Daily Inspiration */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Next Appointment Card */}
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div className="flex items-start justify-between mb-4">
+            <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+              <Calendar className="w-6 h-6" />
+            </div>
+            {nextAppointment && <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full uppercase">Confirmed</span>}
           </div>
           <div>
-            <p className="text-xs font-bold text-amber-800 uppercase tracking-wider">Daily insight</p>
-            <p className="text-sm font-medium text-text italic">"Small steps everyday lead to big results."</p>
+            <h3 className="text-lg font-bold text-gray-900 mb-1">Next Session</h3>
+            {nextAppointment ? (
+              <>
+                <p className="text-2xl font-bold text-blue-600 mb-1">
+                  {new Date(nextAppointment.date).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}
+                </p>
+                <p className="text-gray-500 flex items-center gap-2">
+                  <Zap className="w-4 h-4" />
+                  {nextAppointment.time} with Dr. {nextAppointment.psychologistName}
+                </p>
+                <button 
+                  onClick={() => navigate(`/student/session/${nextAppointment.id}`)}
+                  className="mt-4 w-full py-2 bg-blue-600/10 text-blue-700 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition-all text-sm"
+                >
+                  Join Waiting Room
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-gray-500 mb-4">No upcoming sessions scheduled.</p>
+                <Link to="/student/psychologists" className="text-primary font-medium hover:underline flex items-center gap-1 group">
+                  Find a psychologist <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Daily Insight / Quick Action */}
+        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-100 shadow-sm flex flex-col justify-between">
+           <div className="flex items-start justify-between mb-4">
+            <div className="p-3 bg-white text-amber-500 rounded-xl shadow-sm">
+              <Sparkles className="w-6 h-6" />
+            </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Daily Thought</h3>
+            <blockquote className="text-gray-600 italic mb-4 leading-relaxed">
+              "You don't have to control your thoughts. You just have to stop letting them control you."
+            </blockquote>
+            <div className="flex gap-2">
+               <button onClick={() => navigate('/student/challenges')} className="text-sm font-semibold text-amber-700 bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all">
+                 View Today's Challenge
+               </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Proactive Check-in */}
-      {isStudent && (
-        <div className="mb-10">
-          <WellnessCheckin />
-        </div>
-      )}
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        {stats.map((stat, i) => (
-          <div key={i} className="card card-hover card-glass border-none group cursor-pointer relative overflow-hidden">
-            <div className="absolute -right-2 -top-2 w-16 h-16 bg-current opacity-5 rounded-full group-hover:scale-150 transition-transform duration-500" />
-            <div className={`w-12 h-12 rounded-2xl ${stat.color} flex items-center justify-center mb-4 shadow-sm group-hover:rotate-12 transition-transform`}>
-              <stat.icon className="w-6 h-6" />
+      {/* Feature Grid */}
+      <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+        <Brain className="w-5 h-5 text-gray-400" />
+        Explore Features
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {features.map((feature) => (
+          <Link 
+            key={feature.title} 
+            to={feature.href}
+            className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-primary/20 transition-all group flex flex-col"
+          >
+            <div className={`w-12 h-12 rounded-xl ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+              <feature.icon className="w-6 h-6" />
             </div>
-            <p className="text-sm font-bold text-text-muted mb-1 uppercase tracking-wider">{stat.label}</p>
-            <p className="text-3xl font-bold text-text">{stat.value}</p>
-          </div>
+            <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>
+            <p className="text-gray-500 text-sm mb-6 flex-1">{feature.desc}</p>
+            <div className="flex items-center text-sm font-semibold text-gray-400 group-hover:text-primary transition-colors">
+              {feature.action} <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
         ))}
       </div>
-
-      {/* Mood Trend Chart */}
-      {isStudent && moodHistory.length > 0 && (
-        <div className="card card-glass mb-10 border-none overflow-hidden">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-xl font-bold text-text">Emotional Wellbeing</h2>
-              <p className="text-sm text-text-muted">Your mood patterns over the last 7 days</p>
-            </div>
-            <div className="flex items-center gap-2">
-               <Link to="/student/mood" className="text-sm font-bold text-primary hover:text-primary-dark transition-colors">View Details →</Link>
-            </div>
-          </div>
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={moodData}>
-                <defs>
-                  <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2D6A4F" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#2D6A4F" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E0E0E0" />
-                <XAxis 
-                  dataKey="date" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{fill: '#7F8C8D', fontSize: 12, fontWeight: 600}}
-                  dy={10}
-                />
-                <YAxis hide domain={[0, 6]} />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', padding: '12px' }}
-                  labelStyle={{ fontWeight: 'bold', marginBottom: '4px' }}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="score" 
-                  stroke="#2D6A4F" 
-                  strokeWidth={4}
-                  fillOpacity={1} 
-                  fill="url(#colorScore)" 
-                  animationDuration={2000}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      )}
-
-      {/* Quick Actions */}
-      <div>
-        <h2 className="text-2xl font-bold text-text mb-6">Explore Tools</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {actions.map((action, i) => (
-            <Link 
-              key={i} 
-              to={action.href}
-              className="card card-glass border-none flex items-center gap-6 group hover:translate-x-1"
-            >
-              <div className={`w-14 h-14 rounded-2xl ${action.color} flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-black/5`}>
-                <action.icon className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-text group-hover:text-primary transition-colors">{action.title}</h3>
-                <p className="text-sm text-text-muted leading-relaxed font-medium">{action.desc}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
     </div>
+  );
+}
+
+function ActivityIcon(props: any) {
+  return (
+    <svg 
+      {...props}
+      xmlns="http://www.w3.org/2000/svg" 
+      width="24" 
+      height="24" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    >
+      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+    </svg>
   );
 }

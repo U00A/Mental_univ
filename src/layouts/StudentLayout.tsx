@@ -8,10 +8,8 @@ import {
   BookOpen, 
   Leaf, 
   ShieldAlert, 
-  Menu, 
   LogOut, 
   User,
-  Bell,
   Trophy,
   Home
 } from 'lucide-react';
@@ -112,48 +110,52 @@ export default function StudentLayout() {
         </div>
       </aside>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 bg-background">
-        {/* Top Header */}
-        <header className="h-16 bg-white/80 backdrop-blur-md border-b border-border sticky top-0 z-30 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      {/* Main Content Wrapper */}
+      <div className="flex-1 flex flex-col min-w-0 bg-gray-50/30">
+        
+        {/* Minimal Global Header */}
+        <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-0 z-20">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 -ml-2 text-text-muted hover:text-primary rounded-lg"
+              className="lg:hidden p-2 -ml-2 text-gray-400 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
             >
               <Menu className="w-6 h-6" />
             </button>
-            <h1 className="text-lg font-semibold text-text hidden sm:block">
-              {navigation.find(n => location.pathname.startsWith(n.href) && n.href !== '/')?.name || 'Dashboard'}
+            {/* Breadcrumb / Title - simplified */}
+            <h1 className="text-lg font-semibold text-gray-800 hidden sm:block">
+               {navigation.find(n => location.pathname === n.href || (n.href !== '/' && location.pathname.startsWith(n.href)))?.name || 'Dashboard'}
             </h1>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <button 
               onClick={() => navigate('/')}
-              className="hidden md:flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-text-muted hover:text-primary hover:bg-gray-50 rounded-lg transition-colors"
+              className="hidden md:flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
             >
               <Home className="w-4 h-4" />
-              Home
+              <span>Home</span>
             </button>
+            
+            <div className="h-6 w-px bg-gray-200 hidden md:block" />
+
              <button 
                 onClick={() => setIsPanicOpen(true)}
-                className="btn btn-error btn-sm rounded-full px-4 animate-pulse shadow-lg shadow-red-200"
+                className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 rounded-full text-sm font-semibold transition-all shadow-sm shadow-red-100 animate-pulse"
               >
-                SOS
+                <ShieldAlert className="w-4 h-4" />
+                <span className="hidden sm:inline">SOS</span>
               </button>
-            <button className="p-2 text-text-muted hover:text-primary relative rounded-full hover:bg-gray-100">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white" />
-            </button>
-            <div className="h-8 w-px bg-gray-200 mx-2" />
+            
             <UserNav />
           </div>
         </header>
 
-        {/* Page Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
-          <Outlet />
+        {/* Scrollable Content Area */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 lg:p-8">
+          <div className="max-w-7xl mx-auto space-y-8">
+            <Outlet />
+          </div>
         </main>
       </div>
 
