@@ -12,9 +12,9 @@ import {
   Activity,
   Plus,
   FileText,
-  Bell,
-  LucideIcon
+  Bell
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getAppointments, type Appointment } from '@/lib/firestore';
 import { 
