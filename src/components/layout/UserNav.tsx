@@ -85,7 +85,7 @@ export default function UserNav() {
             </Link>
             
             <Link
-              to="/settings"
+              to={`/${profile.role === 'psychologist' ? 'psychologist' : profile.role === 'admin' ? 'admin' : 'student'}/settings`}
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-3 px-3 py-2 text-sm text-text-muted hover:text-primary hover:bg-gray-50 rounded-lg transition-colors"
             >

@@ -13,6 +13,7 @@ import Home from '@/pages/public/Home';
 import Login from '@/pages/auth/Login';
 import Register from '@/pages/auth/Register';
 import PlaceholderPage from '@/components/common/PlaceholderPage';
+import NotFound from '@/pages/public/NotFound';
 
 // Student Pages
 import Dashboard from '@/pages/student/Dashboard';
@@ -171,7 +172,7 @@ export default function App() {
             </Route>
 
             {/* Fallback */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </ToastProvider>

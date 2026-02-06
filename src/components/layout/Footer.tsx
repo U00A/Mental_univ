@@ -45,8 +45,8 @@ export default function Footer() {
             <ul className="space-y-4">
               <li><Link to="/about" className="text-text-muted hover:text-primary transition-colors text-sm">About Us</Link></li>
               <li><Link to="/services" className="text-text-muted hover:text-primary transition-colors text-sm">Our Services</Link></li>
-              <li><Link to="/psychologists" className="text-text-muted hover:text-primary transition-colors text-sm">Find a Psychologist</Link></li>
-              <li><Link to="/appointments" className="text-text-muted hover:text-primary transition-colors text-sm">Book Appointment</Link></li>
+              <li><Link to="/login" className="text-text-muted hover:text-primary transition-colors text-sm">Find a Psychologist</Link></li>
+              <li><Link to="/login" className="text-text-muted hover:text-primary transition-colors text-sm">Book Appointment</Link></li>
             </ul>
           </div>
 
@@ -55,9 +55,9 @@ export default function Footer() {
             <h3 className="text-text-heading font-semibold mb-6">Resources</h3>
             <ul className="space-y-4">
               <li><Link to="/resources" className="text-text-muted hover:text-primary transition-colors text-sm">Mental Health Library</Link></li>
-              <li><Link to="/emergency" className="text-text-muted hover:text-primary transition-colors text-sm">Emergency Contacts</Link></li>
+              <li><Link to="/contact" className="text-text-muted hover:text-primary transition-colors text-sm">Emergency Contacts</Link></li>
               <li><Link to="/faq" className="text-text-muted hover:text-primary transition-colors text-sm">FAQs</Link></li>
-              <li><Link to="/student-life" className="text-text-muted hover:text-primary transition-colors text-sm">Student Life</Link></li>
+              <li><Link to="/about" className="text-text-muted hover:text-primary transition-colors text-sm">Student Life</Link></li>
             </ul>
           </div>
 
