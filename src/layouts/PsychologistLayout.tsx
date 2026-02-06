@@ -10,7 +10,8 @@ import {
   Menu,
   LogOut,
   User,
-  Bell
+  Bell,
+  Home
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import UserNav from '@/components/layout/UserNav';
@@ -22,6 +23,7 @@ export default function PsychologistLayout() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const navigation = [
+    { name: 'Home', href: '/', icon: Home },
     { name: 'Dashboard', href: '/psychologist/dashboard', icon: LayoutDashboard },
     { name: 'My Patients', href: '/psychologist/patients', icon: Users },
     { name: 'Calendar', href: '/psychologist/calendar', icon: Calendar },
@@ -52,10 +54,10 @@ export default function PsychologistLayout() {
       `}>
         <div className="h-full flex flex-col">
           {/* Logo */}
-          <div className="h-16 flex items-center gap-3 px-6 border-b border-slate-800">
+          <Link to="/" className="h-16 flex items-center gap-3 px-6 border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
             <img src="/images/logo.svg" alt="MindWell" className="h-8 w-8 brightness-0 invert" />
             <span className="text-xl font-bold">MindWell Pro</span>
-          </div>
+          </Link>
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">

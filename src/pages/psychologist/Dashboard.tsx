@@ -12,7 +12,8 @@ import {
   Activity,
   Plus,
   FileText,
-  Bell
+  Bell,
+  Home
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -118,6 +119,13 @@ export default function PsychologistDashboard() {
           <p className="text-gray-500 mt-1">Here's an overview of your practice today.</p>
         </div>
         <div className="flex items-center gap-3">
+          <button 
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
+          >
+            <Home className="w-4 h-4" />
+            Home
+          </button>
           <button 
             onClick={() => navigate('/psychologist/calendar')}
             className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
