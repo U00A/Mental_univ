@@ -11,7 +11,8 @@ import {
   Menu, 
   LogOut, 
   User,
-  Bell
+  Bell,
+  Trophy
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import PanicHelper from '@/components/tools/PanicHelper';
@@ -29,7 +30,9 @@ export default function StudentLayout() {
     { name: 'Psychologists', href: '/student/psychologists', icon: Users },
     { name: 'Messages', href: '/student/messages', icon: MessageSquare },
     { name: 'Journal & Goals', href: '/student/journal', icon: BookOpen },
+    { name: 'Wellness Challenges', href: '/student/challenges', icon: Trophy },
     { name: 'Community', href: '/student/groups', icon: Leaf },
+    { name: 'Resources', href: '/student/resources', icon: BookOpen },
     { name: 'Crisis & Safety', href: '/student/crisis', icon: ShieldAlert },
   ];
 
