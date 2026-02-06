@@ -3,30 +3,35 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getPlatformStats } from '@/lib/firestore';
 
-// ...
+interface PlatformStats {
+  studentsHelped: string;
+  sessionsCompleted: string;
+  psychologists: string;
+  yearsOfSupport: string;
+}
+
+export default function Home() {
+  const [stats, setStats] = useState<PlatformStats>({
+    studentsHelped: '0',
+    sessionsCompleted: '0',
+    psychologists: '0',
+    yearsOfSupport: '10+' // Stays constant as it's platform age/availability
+  });
 
   useEffect(() => {
-    console.log("MindWell Platform v2 - Fetching Real Stats");
+    console.log("MindWell Platform v2 - Fetching Real Stats (No Defaults)");
     const fetchStats = async () => {
       try {
         const statsData = await getPlatformStats();
         
-        // Only update if we have some data, otherwise keep defaults (or show 0 if that's preferred, but marketing numbers are better for empty app)
-        // If the database is empty, it returns 0s. 
-        // We'll verify if counts are > 0 to override defaults, or just show real data (0) if that's what the user prefers?
-        // "Real data" usually means "show what is there". But 0 looks bad.
-        // I will add a check: if 0, keep defaults. If > 0, show real.
+        // Directly set whatever comes from the DB, even if 0
+        setStats({
+            studentsHelped: `${statsData.studentsCount}`,
+            sessionsCompleted: `${statsData.sessionsCount}`,
+            psychologists: `${statsData.psychologistsCount}`,
+            yearsOfSupport: '10+' 
+        });
         
-        const hasData = statsData.studentsCount > 0 || statsData.psychologistsCount > 0;
-        
-        if (hasData) {
-            setStats({
-                studentsHelped: statsData.studentsCount > 0 ? `${statsData.studentsCount}+` : '2,500+',
-                sessionsCompleted: statsData.sessionsCount > 0 ? `${statsData.sessionsCount}+` : '5,000+',
-                psychologists: statsData.psychologistsCount > 0 ? `${statsData.psychologistsCount}+` : '15+',
-                yearsOfSupport: '10+' // constant
-            });
-        }
       } catch (err) {
         console.error("Error fetching stats:", err);
       }
