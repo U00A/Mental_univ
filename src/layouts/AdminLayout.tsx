@@ -13,6 +13,7 @@ import {
   Bell
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import UserNav from '@/components/layout/UserNav';
 
 export default function AdminLayout() {
   const { profile, signOut } = useAuth();
@@ -131,10 +132,12 @@ export default function AdminLayout() {
             <div className="hidden sm:flex px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs font-bold uppercase tracking-wider border border-green-100">
                 System Active
             </div>
-            <button className="p-2 text-text-muted hover:text-red-600 relative transition-colors">
+            <button className="p-2 text-text-muted hover:text-red-600 relative transition-colors rounded-full hover:bg-gray-100">
               <Bell className="w-5 h-5" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white" />
             </button>
+            <div className="h-8 w-px bg-gray-200 mx-2" />
+            <UserNav />
           </div>
         </header>
 

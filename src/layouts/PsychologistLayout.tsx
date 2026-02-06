@@ -13,6 +13,7 @@ import {
   Bell
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import UserNav from '@/components/layout/UserNav';
 
 export default function PsychologistLayout() {
   const { profile, signOut } = useAuth();
@@ -119,10 +120,12 @@ export default function PsychologistLayout() {
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="p-2 text-text-muted hover:text-primary relative">
+            <button className="p-2 text-text-muted hover:text-primary relative rounded-full hover:bg-gray-100">
               <Bell className="w-5 h-5" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white" />
             </button>
+            <div className="h-8 w-px bg-gray-200 mx-2" />
+            <UserNav />
           </div>
         </header>
 
