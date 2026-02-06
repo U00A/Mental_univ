@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Brain, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import UserNav from '@/components/layout/UserNav';
 
 export default function PublicHeader() {
+  const { user } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   /* const location = useLocation(); */
@@ -60,20 +63,29 @@ export default function PublicHeader() {
             ))}
           </div>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons or User Menu */}
           <div className="hidden md:flex items-center gap-4">
-            <Link 
-              to="/login" 
-              className="px-5 py-2.5 text-text hover:text-primary font-medium transition-colors"
-            >
-              Log In
-            </Link>
-            <Link 
-              to="/register" 
-              className="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-full font-medium shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5"
-            >
-              Get Started
-            </Link>
+            {user ? (
+              <>
+                <div className="h-8 w-px bg-gray-200" />
+                <UserNav />
+              </>
+            ) : (
+              <>
+                <Link 
+                  to="/login" 
+                  className="px-5 py-2.5 text-text hover:text-primary font-medium transition-colors"
+                >
+                  Log In
+                </Link>
+                <Link 
+                  to="/register" 
+                  className="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-full font-medium shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
