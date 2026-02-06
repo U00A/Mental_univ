@@ -46,27 +46,36 @@ h1, h2, h3, h4, h5, h6 {
 /* Component Classes */
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300 cursor-pointer border-none no-underline active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-outfit font-medium text-sm transition-all duration-300 cursor-pointer border border-transparent no-underline active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
   }
 
   .btn-primary {
-    @apply bg-primary text-white hover:bg-primary-dark shadow-[0_4px_14px_0_rgba(45,106,79,0.39)] hover:shadow-[0_6px_20px_rgba(45,106,79,0.23)];
+    background: var(--gradient-primary);
+    @apply text-white shadow-[0_4px_14px_0_rgba(45,106,79,0.39)] hover:shadow-[0_6px_20px_rgba(45,106,79,0.23)] hover:-translate-y-0.5;
   }
 
   .btn-secondary {
-    @apply bg-white text-text border border-border hover:bg-gray-50 hover:border-gray-300 transform hover:-translate-y-0.5 shadow-sm;
+    @apply bg-white text-text border-border hover:border-gray-300 hover:bg-gray-50/80 shadow-sm hover:shadow-md hover:-translate-y-0.5;
+  }
+
+  .btn-outline {
+    @apply border-primary/20 text-primary hover:bg-primary/5 hover:border-primary/50;
+  }
+
+  .btn-ghost {
+    @apply text-text-muted hover:text-primary hover:bg-primary/5 border-transparent shadow-none;
   }
 
   .btn-danger {
-    @apply bg-accent text-white hover:opacity-90 shadow-lg shadow-accent/20;
+    @apply bg-accent text-white hover:opacity-90 shadow-lg shadow-accent/20 hover:-translate-y-0.5;
   }
 
   .btn-sm {
-    @apply px-4 py-2 text-xs;
+    @apply px-4 py-2 text-xs rounded-lg;
   }
 
   .btn-lg {
-    @apply px-8 py-4 text-base;
+    @apply px-8 py-4 text-base rounded-2xl;
   }
 
   .input {
