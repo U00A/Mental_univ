@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="300" height="200">
+    <!-- Therapy/consultation illustration -->
+    <defs>
+        <linearGradient id="therapyBg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#fffbeb;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#f0fdf4;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- Background -->
+    <rect width="300" height="200" fill="url(#therapyBg)" rx="20"/>
+
+    <!-- Two people talking -->
+    <!-- Person 1 - Student -->
+    <circle cx="90" cy="80" r="25" fill="#2ecc71"/>
+    <circle cx="90" cy="60" r="12" fill="#f4d03f"/>
+    <rect x="70" y="105" width="40" height="50" rx="8" fill="#2ecc71"/>
+
+    <!-- Person 2 - Psychologist -->
+    <circle cx="210" cy="80" r="25" fill="#27ae60"/>
+    <circle cx="210" cy="60" r="12" fill="#d4a574"/>
+    <rect x="190" y="105" width="40" height="50" rx="8" fill="#27ae60"/>
+
+    <!-- Speech bubbles -->
+    <ellipse cx="130" cy="60" rx="20" ry="12" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+    <ellipse cx="170" cy="70" rx="18" ry="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+
+    <!-- Connection line -->
+    <path d="M115 80 Q150 50 185 80" fill="none" stroke="#1a8f43" stroke-width="2" stroke-dasharray="5,3" opacity="0.4"/>
+
+    <!-- Plant decoration -->
+    <path d="M20 180 Q30 160 40 180 Q30 165 20 180" fill="#27ae60" opacity="0.6"/>
+    <path d="M260 180 Q270 155 280 180 Q270 160 260 180" fill="#2ecc71" opacity="0.5"/>
+
+    <!-- Clipboard for notes -->
+    <rect x="240" y="140" width="30" height="40" rx="3" fill="white" stroke="#d1d5db" stroke-width="1"/>
+    <line x1="248" y1="152" x2="262" y2="152" stroke="#9ca3af" stroke-width="2"/>
+    <line x1="248" y1="160" x2="258" y2="160" stroke="#9ca3af" stroke-width="2"/>
+    <line x1="248" y1="168" x2="260" y2="168" stroke="#9ca3af" stroke-width="2"/>
+</svg>

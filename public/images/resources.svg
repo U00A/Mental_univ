@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="300" height="200">
+    <!-- Resources/learning illustration -->
+    <defs>
+        <linearGradient id="resourceBg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ede9fe;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#f0fdf4;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- Background -->
+    <rect width="300" height="200" fill="url(#resourceBg)" rx="20"/>
+
+    <!-- Book stack -->
+    <rect x="40" y="100" width="70" height="12" rx="2" fill="#22c55e"/>
+    <rect x="45" y="88" width="60" height="12" rx="2" fill="#27ae60"/>
+    <rect x="42" y="76" width="65" height="12" rx="2" fill="#2ecc71"/>
+    <rect x="48" y="64" width="55" height="12" rx="2" fill="#1a8f43"/>
+
+    <!-- Video player -->
+    <rect x="140" y="50" width="120" height="75" rx="8" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+    <circle cx="200" cy="88" r="15" fill="#22c55e"/>
+    <path d="M195 82 L210 88 L195 94 Z" fill="white"/>
+
+    <!-- Article cards -->
+    <rect x="140" y="135" width="55" height="50" rx="5" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+    <line x1="148" y1="150" x2="187" y2="150" stroke="#d1d5db" stroke-width="3"/>
+    <line x1="148" y1="160" x2="180" y2="160" stroke="#e5e7eb" stroke-width="2"/>
+    <line x1="148" y1="168" x2="175" y2="168" stroke="#e5e7eb" stroke-width="2"/>
+
+    <rect x="205" y="135" width="55" height="50" rx="5" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+    <line x1="213" y1="150" x2="252" y2="150" stroke="#d1d5db" stroke-width="3"/>
+    <line x1="213" y1="160" x2="245" y2="160" stroke="#e5e7eb" stroke-width="2"/>
+    <line x1="213" y1="168" x2="240" y2="168" stroke="#e5e7eb" stroke-width="2"/>
+
+    <!-- Light bulb for learning -->
+    <circle cx="75" cy="45" r="18" fill="#fbbf24" opacity="0.3"/>
+    <text x="75" y="52" font-size="22" text-anchor="middle">💡</text>
+</svg>

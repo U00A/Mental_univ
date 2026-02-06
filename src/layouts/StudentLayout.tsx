@@ -1,0 +1,148 @@
+import { useState } from 'react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { 
+  LayoutDashboard, 
+  Activity, 
+  Users, 
+  MessageSquare, 
+  BookOpen, 
+  Leaf, 
+  ShieldAlert, 
+  Menu, 
+  LogOut, 
+  User,
+  Bell
+} from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import PanicHelper from '@/components/tools/PanicHelper';
+
+export default function StudentLayout() {
+  const { profile, signOut } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isPanicOpen, setIsPanicOpen] = useState(false);
+
+  const navigation = [
+    { name: 'Dashboard', href: '/student/dashboard', icon: LayoutDashboard },
+    { name: 'Wellness', href: '/student/wellness', icon: Activity },
+    { name: 'Psychologists', href: '/student/psychologists', icon: Users },
+    { name: 'Messages', href: '/student/messages', icon: MessageSquare },
+    { name: 'Journal & Goals', href: '/student/journal', icon: BookOpen },
+    { name: 'Community', href: '/student/groups', icon: Leaf },
+    { name: 'Crisis & Safety', href: '/student/crisis', icon: ShieldAlert },
+  ];
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/login');
+  };
+
+  return (
+    <div className="min-h-screen bg-background flex">
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-border transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:h-screen lg:sticky lg:top-0
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <div className="h-full flex flex-col">
+          {/* Logo */}
+          <div className="h-16 flex items-center gap-3 px-6 border-b border-border">
+            <img src="/images/logo.svg" alt="MindWell" className="h-8 w-8" />
+            <span className="text-xl font-bold text-text">MindWell</span>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            {navigation.map((item) => {
+              const isActive = location.pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`
+                    flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors
+                    ${isActive 
+                      ? 'bg-primary/10 text-primary' 
+                      : 'text-text-muted hover:bg-gray-50 hover:text-text'}
+                  `}
+                >
+                  <item.icon className="w-5 h-5" />
+                  {item.name}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* User Profile Footer */}
+          <div className="p-4 border-t border-border">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                {profile?.displayName?.[0] || <User className="w-5 h-5" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-text truncate">{profile?.displayName || 'Student'}</p>
+                <Link to="/student/settings" className="text-xs text-text-muted hover:text-primary">
+                  View Profile
+                </Link>
+              </div>
+            </div>
+            <button 
+              onClick={handleSignOut}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top Header */}
+        <header className="h-16 bg-white/80 backdrop-blur-md border-b border-border sticky top-0 z-30 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden p-2 -ml-2 text-text-muted hover:text-primary rounded-lg"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <h1 className="text-lg font-semibold text-text hidden sm:block">
+              {navigation.find(n => location.pathname.startsWith(n.href))?.name || 'Dashboard'}
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-4">
+             <button 
+                onClick={() => setIsPanicOpen(true)}
+                className="btn btn-error btn-sm rounded-full px-4 animate-pulse shadow-lg shadow-red-200"
+              >
+                SOS
+              </button>
+            <button className="p-2 text-text-muted hover:text-primary relative">
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white" />
+            </button>
+          </div>
+        </header>
+
+        {/* Page Content */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+          <Outlet />
+        </main>
+      </div>
+
+      <PanicHelper isOpen={isPanicOpen} onClose={() => setIsPanicOpen(false)} />
+    </div>
+  );
+}

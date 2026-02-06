@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="300" height="200">
+    <!-- Peer support illustration -->
+    <defs>
+        <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f0fdf4;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#dcfce7;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- Background -->
+    <rect width="300" height="200" fill="url(#bg1)" rx="20"/>
+
+    <!-- Three people in circle -->
+    <circle cx="100" cy="100" r="30" fill="#2ecc71"/>
+    <circle cx="100" cy="80" r="15" fill="#1a8f43"/>
+
+    <circle cx="200" cy="100" r="30" fill="#27ae60"/>
+    <circle cx="200" cy="80" r="15" fill="#1a8f43"/>
+
+    <circle cx="150" cy="160" r="30" fill="#22c55e"/>
+    <circle cx="150" cy="140" r="15" fill="#1a8f43"/>
+
+    <!-- Connection lines -->
+    <path d="M115 90 Q150 70 185 90" fill="none" stroke="#1a8f43" stroke-width="2" stroke-dasharray="5,5" opacity="0.5"/>
+    <path d="M115 110 Q150 150 150 140" fill="none" stroke="#1a8f43" stroke-width="2" stroke-dasharray="5,5" opacity="0.5"/>
+    <path d="M185 110 Q180 150 165 145" fill="none" stroke="#1a8f43" stroke-width="2" stroke-dasharray="5,5" opacity="0.5"/>
+
+    <!-- Hearts for support -->
+    <text x="148" y="108" font-size="24" text-anchor="middle">💚</text>
+</svg>

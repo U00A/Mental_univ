@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="300" height="200">
+    <!-- Mood tracking illustration -->
+    <defs>
+        <linearGradient id="moodBg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#fef3c7;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#f0fdf4;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- Background -->
+    <rect width="300" height="200" fill="url(#moodBg)" rx="20"/>
+
+    <!-- Mood emojis in a row -->
+    <circle cx="60" cy="70" r="25" fill="#ef4444" opacity="0.2"/>
+    <text x="60" y="78" font-size="30" text-anchor="middle">😢</text>
+
+    <circle cx="120" cy="70" r="25" fill="#f59e0b" opacity="0.2"/>
+    <text x="120" y="78" font-size="30" text-anchor="middle">😐</text>
+
+    <circle cx="180" cy="70" r="25" fill="#84cc16" opacity="0.2"/>
+    <text x="180" y="78" font-size="30" text-anchor="middle">🙂</text>
+
+    <circle cx="240" cy="70" r="25" fill="#22c55e" opacity="0.3"/>
+    <text x="240" y="78" font-size="30" text-anchor="middle">😊</text>
+
+    <!-- Chart line showing improvement -->
+    <path d="M40 160 Q80 150 120 140 T180 120 T260 100" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Dots on chart -->
+    <circle cx="40" cy="160" r="5" fill="#ef4444"/>
+    <circle cx="100" cy="145" r="5" fill="#f59e0b"/>
+    <circle cx="160" cy="125" r="5" fill="#84cc16"/>
+    <circle cx="220" cy="108" r="5" fill="#22c55e"/>
+    <circle cx="260" cy="100" r="6" fill="#22c55e" stroke="white" stroke-width="2"/>
+
+    <!-- Arrow up -->
+    <path d="M270 90 L270 75 L265 80 M270 75 L275 80" fill="none" stroke="#22c55e" stroke-width="2"/>
+</svg>

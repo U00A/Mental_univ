@@ -1,0 +1,9 @@
+/* App-specific styles only - no global resets */
+
+/* Remove any default constraints from #root */
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Remove conflicting card styles - using index.css definitions instead */

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+    <!-- Logo background with university green -->
+    <defs>
+        <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    <!-- Mind icon -->
+    <circle cx="25" cy="30" r="18" fill="url(#greenGrad)" opacity="0.15"/>
+    <path d="M25 15 C35 15 40 25 40 30 C40 40 30 45 25 45 C20 45 10 40 10 30 C10 25 15 15 25 15" fill="none" stroke="#27ae60" stroke-width="2.5"/>
+    <path d="M20 28 Q25 23 30 28" fill="none" stroke="#27ae60" stroke-width="2"/>
+    <circle cx="25" cy="33" r="4" fill="#27ae60"/>
+    <!-- Text -->
+    <text x="52" y="28" font-family="Outfit, sans-serif" font-size="16" font-weight="700" fill="#2c3e50">MindWell</text>
+    <text x="52" y="43" font-family="Inter, sans-serif" font-size="10" fill="#7f8c8d">جامعة الشاذلي بن جديد - الطارف</text>
+</svg>
