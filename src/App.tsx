@@ -27,6 +27,8 @@ import PostDetail from '@/pages/student/PostDetail';
 import MoodTracker from '@/pages/student/MoodTracker';
 import Resources from '@/pages/student/Resources';
 import SafetyPlan from '@/pages/student/SafetyPlan';
+import CrisisSupport from '@/pages/student/CrisisSupport';
+import WellnessChallenges from '@/pages/student/WellnessChallenges';
 import VideoCall from '@/pages/student/VideoCall';
 import Settings from '@/pages/student/Settings';
 import Insights from '@/pages/student/Insights';
@@ -71,6 +73,8 @@ export default function App() {
             <Route element={<PublicLayout />}>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<PlaceholderPage title="About Us" />} />
+              <Route path="/services" element={<PlaceholderPage title="Our Services" />} />
+              <Route path="/resources" element={<PlaceholderPage title="Public Resources" />} />
               <Route path="/faq" element={<PlaceholderPage title="FAQ" />} />
               <Route path="/contact" element={<PlaceholderPage title="Contact Us" />} />
             </Route>
@@ -116,11 +120,11 @@ export default function App() {
               <Route path="insights" element={<Insights />} />
               <Route path="coping" element={<CopingTools />} />
               <Route path="learn" element={<PlaceholderPage title="Mental Health 101" />} />
-              <Route path="challenges" element={<PlaceholderPage title="Wellness Challenges" />} />
+              <Route path="challenges" element={<WellnessChallenges />} />
               
               {/* Safety */}
               <Route path="safety-plan" element={<SafetyPlan />} />
-              <Route path="crisis" element={<PlaceholderPage title="Crisis Support" />} />
+              <Route path="crisis" element={<CrisisSupport />} />
               
               {/* Settings */}
               <Route path="settings" element={<Settings />} />

@@ -10,6 +10,7 @@ export default function Login() {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'student' | 'psychologist'>('student');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -35,7 +36,7 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      await signInWithGoogle('student');
+      await signInWithGoogle(role);
       navigate('/dashboard');
     } catch (err: unknown) {
       const error = err as Error;
@@ -162,6 +163,29 @@ export default function Login() {
                 <div className="relative flex justify-center text-sm">
                   <span className="px-2 bg-white text-text-muted">Or continue with</span>
                 </div>
+              </div>
+
+              <div className="flex justify-center gap-4 mb-4">
+                 <label className="flex items-center gap-2 cursor-pointer">
+                   <input 
+                     type="radio" 
+                     name="role" 
+                     checked={role === 'student'} 
+                     onChange={() => setRole('student')}
+                     className="accent-primary"
+                   />
+                   <span className="text-sm text-text-muted">I'm a Student</span>
+                 </label>
+                 <label className="flex items-center gap-2 cursor-pointer">
+                   <input 
+                     type="radio" 
+                     name="role" 
+                     checked={role === 'psychologist'} 
+                     onChange={() => setRole('psychologist')}
+                     className="accent-primary"
+                   />
+                   <span className="text-sm text-text-muted">I'm a Psychologist</span>
+                 </label>
               </div>
 
               <button
