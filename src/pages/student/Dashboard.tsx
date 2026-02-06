@@ -3,7 +3,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Calendar, 
-  MessageSquare, 
   Heart, 
   BookOpen, 
   Shield, 
@@ -13,7 +12,6 @@ import {
   ArrowRight,
   Sparkles,
   Zap,
-  PlayCircle,
   Brain
 } from 'lucide-react';
 import { getAppointments, type Appointment } from '@/lib/firestore';

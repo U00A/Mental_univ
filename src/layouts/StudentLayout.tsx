@@ -8,6 +8,7 @@ import {
   BookOpen, 
   Leaf, 
   ShieldAlert, 
+  Menu,
   LogOut, 
   User,
   Trophy,
