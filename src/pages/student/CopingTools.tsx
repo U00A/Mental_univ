@@ -11,8 +11,7 @@ import {
   Sparkles,
   Heart
 } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 
 interface BreathingExercise {
   id: string;
@@ -208,10 +207,7 @@ export default function CopingTools() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div className="space-y-8 animate-fade-in">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-text mb-2">Coping Tools</h1>
           <p className="text-text-muted">Evidence-based techniques to help you manage stress and anxiety</p>
@@ -256,7 +252,7 @@ export default function CopingTools() {
               </div>
 
               {/* Breathing Visual */}
-              <div className="relative flex items-center justify-center py-12 bg-gradient-to-b from-gray-50 to-white rounded-xl">
+              <div className="relative flex items-center justify-center py-12 bg-linear-to-b from-gray-50 to-white rounded-xl">
                 <div 
                   className={`w-48 h-48 rounded-full flex items-center justify-center transition-all duration-1000 ${selectedExercise.color} ${
                     isBreathing ? 'opacity-100' : 'opacity-30'
@@ -419,7 +415,7 @@ export default function CopingTools() {
             </div>
 
             {/* Affirmations */}
-            <div className="card bg-gradient-to-br from-primary/5 to-purple-50">
+            <div className="card bg-linear-to-br from-primary/5 to-purple-50">
               <h2 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-primary" />
                 Daily Affirmations
@@ -479,9 +475,6 @@ export default function CopingTools() {
             </div>
           </div>
         </div>
-      </main>
-
-      <Footer />
     </div>
   );
 }

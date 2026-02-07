@@ -12,6 +12,7 @@ import {
   onSnapshot,
   setDoc,
   deleteDoc,
+  limit as limitQuery,
   Timestamp 
 } from 'firebase/firestore';
 import { db } from './firebase';
@@ -1030,5 +1031,92 @@ export async function deleteJournalEntry(entryId: string): Promise<void> {
   await deleteDoc(doc(db, 'journalEntries', entryId));
 }
 
-// Need to import limit
-import { limit as limitQuery } from 'firebase/firestore';
+// ============ WELLNESS ============
+
+export interface SleepEntry {
+  id: string;
+  userId: string;
+  date: Date;
+  bedTime: string;
+  wakeTime: string;
+  quality: 'poor' | 'fair' | 'good' | 'excellent';
+  notes: string;
+  createdAt: Date;
+}
+
+export interface Challenge {
+  id: string;
+  title: string;
+  description: string;
+  participants: string[];
+  startDate: Date;
+  endDate: Date;
+  type: 'sleep' | 'meditation' | 'exercise';
+}
+
+export async function addSleepEntry(entry: Omit<SleepEntry, 'id' | 'createdAt'>): Promise<string> {
+  const docRef = await addDoc(collection(db, 'sleepEntries'), {
+    ...entry,
+    date: Timestamp.fromDate(entry.date),
+    createdAt: Timestamp.now(),
+  });
+  return docRef.id;
+}
+
+export async function getSleepEntries(userId: string, days: number = 7): Promise<SleepEntry[]> {
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - days);
+  
+  const q = query(
+    collection(db, 'sleepEntries'),
+    where('userId', '==', userId),
+    where('date', '>=', Timestamp.fromDate(startDate)),
+    orderBy('date', 'desc')
+  );
+  
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      date: data.date?.toDate(),
+      createdAt: data.createdAt?.toDate(),
+    } as SleepEntry;
+  });
+}
+
+export async function getChallenges(): Promise<Challenge[]> {
+  const q = query(
+    collection(db, 'challenges'),
+    where('endDate', '>=', Timestamp.now()),
+    orderBy('endDate', 'asc')
+  );
+  
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      startDate: data.startDate?.toDate(),
+      endDate: data.endDate?.toDate(),
+    } as Challenge;
+  });
+}
+
+export async function joinChallenge(challengeId: string, userId: string): Promise<void> {
+  const docRef = doc(db, 'challenges', challengeId);
+  const docSnap = await getDoc(docRef);
+  
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    const participants = data.participants || [];
+    
+    if (!participants.includes(userId)) {
+      await updateDoc(docRef, {
+        participants: [...participants, userId]
+      });
+    }
+  }
+}

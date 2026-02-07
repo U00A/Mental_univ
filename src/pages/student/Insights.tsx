@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart3, Target, Plus, ClipboardCheck, Loader2, Sparkles } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 import WellnessChart, { moodToScore } from '@/components/insights/WellnessChart';
 import GoalCard from '@/components/insights/GoalCard';
 import SymptomCheckerModal from '@/components/insights/SymptomCheckerModal';
@@ -82,8 +81,7 @@ export default function Insights() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <div className="animate-fade-in">
 
       <main className="flex-1 pb-24">
         {/* Hero Section */}
@@ -145,7 +143,7 @@ export default function Insights() {
                   {/* Symptom Checker Card */}
                   <div 
                     onClick={() => setIsCheckerOpen(true)}
-                    className="bg-gradient-to-br from-primary to-primary/80 rounded-[32px] p-6 text-white cursor-pointer hover:shadow-2xl hover:shadow-primary/30 transition-all group"
+                    className="bg-linear-to-br from-primary to-primary/80 rounded-[32px] p-6 text-white cursor-pointer hover:shadow-2xl hover:shadow-primary/30 transition-all group"
                   >
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -223,8 +221,6 @@ export default function Insights() {
         isOpen={isCheckerOpen}
         onClose={() => setIsCheckerOpen(false)}
       />
-
-      <Footer />
     </div>
   );
 }

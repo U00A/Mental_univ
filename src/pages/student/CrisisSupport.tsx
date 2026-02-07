@@ -10,8 +10,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 import PanicHelper from '@/components/tools/PanicHelper';
 
 export default function CrisisSupport() {
@@ -45,10 +44,7 @@ export default function CrisisSupport() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div className="space-y-8 animate-fade-in">
         {/* Hero Section */}
         <div className="mb-12 text-center max-w-2xl mx-auto">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -197,9 +193,6 @@ export default function CrisisSupport() {
             </div>
           </div>
         </div>
-      </main>
-
-      <Footer />
       <PanicHelper isOpen={isPanicOpen} onClose={() => setIsPanicOpen(false)} />
     </div>
   );

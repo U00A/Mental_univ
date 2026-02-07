@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { User, Bell, Lock, Moon, Sun, Monitor, ChevronRight, Loader2, Check } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 
 export default function Settings() {
   const { profile, signOut, updateUserProfile } = useAuth();
@@ -41,10 +40,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      <main className="flex-1 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div className="space-y-8 animate-fade-in max-w-3xl">
         <h1 className="text-2xl font-bold text-text mb-8">Settings</h1>
 
         <div className="space-y-6">
@@ -166,9 +162,6 @@ export default function Settings() {
             Sign Out
           </button>
         </div>
-      </main>
-
-      <Footer />
     </div>
   );
 }

@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, updateDoc, doc, Timestamp } from 'firebase/firestore';
 
 interface SystemUser {
   uid: string;
@@ -22,7 +22,7 @@ interface SystemUser {
   email: string;
   role: 'student' | 'psychologist' | 'admin';
   status: 'active' | 'pending' | 'suspended';
-  createdAt: any;
+  createdAt: Timestamp | null;
 }
 
 export default function AdminDashboard() {
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
     try {
       await updateDoc(doc(db, 'users', uid), { status });
       setUsers(prev => prev.map(u => u.uid === uid ? { ...u, status } : u) as SystemUser[]);
-    } catch (err) {
+    } catch {
       alert('Failed to update user status');
     }
   };

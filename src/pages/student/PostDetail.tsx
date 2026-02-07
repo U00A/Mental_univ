@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MessageSquare, User, Clock, ArrowLeft, Send, Loader2, AlertTriangle } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 import { getPostById, getCommentsByPost, addComment, type Post, type Comment } from '@/lib/firestore';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
@@ -73,12 +72,9 @@ export default function PostDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-background">
-        <Header />
-        <div className="flex-1 flex flex-col items-center justify-center">
-            <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
-            <p className="text-xs font-black text-text-muted uppercase tracking-widest animate-pulse">Loading Discussion...</p>
-        </div>
+      <div className="flex-1 flex flex-col items-center justify-center py-20">
+          <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
+          <p className="text-xs font-black text-text-muted uppercase tracking-widest animate-pulse">Loading Discussion...</p>
       </div>
     );
   }
@@ -86,10 +82,7 @@ export default function PostDetail() {
   if (!post) return null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      <main className="flex-1 pb-24">
+    <div className="animate-fade-in">
         {/* Navigation Bar */}
         <div className="bg-white border-b border-border sticky top-16 z-30">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-4">
@@ -209,9 +202,6 @@ export default function PostDetail() {
                 </div>
             </section>
         </div>
-      </main>
-
-      <Footer />
     </div>
   );
 }

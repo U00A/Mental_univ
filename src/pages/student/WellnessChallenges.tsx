@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Trophy, 
   Target, 
@@ -7,46 +7,66 @@ import {
   Circle, 
   Zap, 
   Calendar,
-  Award
+  Award,
+  Moon,
+  Loader2
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { getChallenges, joinChallenge, type Challenge } from '@/lib/firestore';
 
 export default function WellnessChallenges() {
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
 
-  const challenges = [
-    {
-      id: 'c1',
-      title: 'Mindfulness Master',
-      icon: Zap,
-      color: 'bg-purple-100 text-purple-600',
-      description: 'Complete 7 days of 10-minute meditations.',
-      progress: 4,
-      total: 7,
-      reward: '500 XP'
-    },
-    {
-      id: 'c2',
-      title: 'Social Butterfly',
-      icon: Trophy,
-      color: 'bg-yellow-100 text-yellow-600',
-      description: 'Post 3 supportive comments in the community.',
-      progress: 1,
-      total: 3,
-      reward: 'Badge'
-    },
-    {
-      id: 'c3',
-      title: 'Sleep Specialist',
-      icon: Target,
-      color: 'bg-blue-100 text-blue-600',
-      description: 'Log your sleep for 5 consecutive nights.',
-      progress: 5,
-      total: 5,
-      reward: '300 XP',
-      completed: true
+  const { user } = useAuth();
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [joiningId, setJoiningId] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchChallenges() {
+      try {
+        const data = await getChallenges();
+        setChallenges(data);
+      } catch (error) {
+        console.error('Error fetching challenges:', error);
+      } finally {
+        setLoading(false);
+      }
     }
-  ];
+    fetchChallenges();
+  }, []);
+
+  const handleJoin = async (challengeId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) return;
+    
+    try {
+      setJoiningId(challengeId);
+      await joinChallenge(challengeId, user.uid);
+      
+      // Update local state
+      setChallenges(prev => prev.map(c => {
+        if (c.id === challengeId) {
+          return { ...c, participants: [...c.participants, user.uid] };
+        }
+        return c;
+      }));
+    } catch (error) {
+      console.error('Error joining challenge:', error);
+    } finally {
+      setJoiningId(null);
+    }
+  };
+
+  const getChallengeConfig = (type: string) => {
+    switch (type) {
+      case 'meditation': return { icon: Zap, color: 'bg-purple-100 text-purple-600' };
+      case 'exercise': return { icon: Flame, color: 'bg-orange-100 text-orange-600' };
+      case 'sleep': return { icon: Moon, color: 'bg-blue-100 text-blue-600' };
+      default: return { icon: Trophy, color: 'bg-gray-100 text-gray-600' };
+    }
+  };
 
   const dailyTasks = [
     { id: 't1', title: 'Drink 8 glasses of water', xp: 50 },
@@ -95,42 +115,71 @@ export default function WellnessChallenges() {
                 Active Quests
               </h2>
               <div className="grid md:grid-cols-2 gap-4">
-                {challenges.map(challenge => (
-                  <div key={challenge.id} className="card card-hover group cursor-pointer relative overflow-hidden">
-                    {challenge.completed && (
-                      <div className="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-bl-xl z-10">
-                        COMPLETED
-                      </div>
-                    )}
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className={`w-12 h-12 rounded-xl ${challenge.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                        <challenge.icon className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-text">{challenge.title}</h3>
-                        <p className="text-xs text-primary font-bold">{challenge.reward}</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-text-muted mb-4">{challenge.description}</p>
-                    
-                    <div className="relative pt-1">
-                      <div className="flex mb-2 items-center justify-between">
-                        <div className="text-xs font-semibold text-text-muted">
-                          {Math.round((challenge.progress / challenge.total) * 100)}%
-                        </div>
-                        <div className="text-xs font-semibold text-text-muted">
-                          {challenge.progress}/{challenge.total}
-                        </div>
-                      </div>
-                      <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-primary/10">
-                        <div 
-                          style={{ width: `${(challenge.progress / challenge.total) * 100}%` }} 
-                          className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${challenge.completed ? 'bg-green-500' : 'bg-primary'}`} 
-                        />
-                      </div>
-                    </div>
+                {loading ? (
+                  <div className="col-span-2 flex justify-center py-12">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
                   </div>
-                ))}
+                ) : challenges.length === 0 ? (
+                  <div className="col-span-2 text-center py-12 text-text-muted">
+                    No active challenges found. Check back later!
+                  </div>
+                ) : (
+                  challenges.map(challenge => {
+                    const { icon: Icon, color } = getChallengeConfig(challenge.type);
+                    const isJoined = user && challenge.participants.includes(user.uid);
+                    const totalDays = Math.ceil((challenge.endDate.getTime() - challenge.startDate.getTime()) / (1000 * 60 * 60 * 24));
+                    const progress = isJoined ? 0 : 0; // Placeholder until we have progress tracking
+
+                    return (
+                      <div key={challenge.id} className="card card-hover group cursor-pointer relative overflow-hidden">
+                        {isJoined && (
+                          <div className="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-bl-xl z-10">
+                            ACTIVE
+                          </div>
+                        )}
+                        <div className="flex items-start gap-4 mb-4">
+                          <div className={`w-12 h-12 rounded-xl ${color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                            <Icon className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-text">{challenge.title}</h3>
+                            <p className="text-xs text-primary font-bold">100 XP</p>
+                          </div>
+                        </div>
+                        <p className="text-sm text-text-muted mb-4">{challenge.description}</p>
+                        
+                        {isJoined ? (
+                          <div className="relative pt-1">
+                            <div className="flex mb-2 items-center justify-between">
+                              <div className="text-xs font-semibold text-text-muted">
+                                {Math.round((progress / totalDays) * 100)}%
+                              </div>
+                              <div className="text-xs font-semibold text-text-muted">
+                                {progress}/{totalDays} days
+                              </div>
+                            </div>
+                            <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-primary/10">
+                              <div 
+                                style={{ width: `${(progress / totalDays) * 100}%` }} 
+                                className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary" 
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <button 
+                            onClick={(e) => handleJoin(challenge.id, e)}
+                            disabled={joiningId === challenge.id}
+                            className="w-full btn btn-primary btn-sm mt-auto"
+                          >
+                            {joiningId === challenge.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin mx-auto" />
+                            ) : 'Join Challenge'}
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </section>
 

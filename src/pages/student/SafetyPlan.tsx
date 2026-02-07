@@ -2,8 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { AlertTriangle, Heart, Users, MapPin, Stethoscope, Shield, Loader2, Phone } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getSafetyPlan, saveSafetyPlan, type SafetyPlanData, type SafetyPlanContact } from '@/lib/firestore';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 import SafetySection from '@/components/common/SafetySection';
 import ContactSection from '@/components/common/ContactSection';
 import debounce from 'lodash/debounce';
@@ -175,17 +174,14 @@ export default function SafetyPlan() {
 
   if (loading) {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div className="space-y-8 animate-fade-in max-w-4xl">
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-text mb-2">My Safety Plan</h1>
@@ -279,9 +275,6 @@ export default function SafetyPlan() {
                 )
             ))}
         </div>
-      </main>
-
-      <Footer />
     </div>
   );
 }

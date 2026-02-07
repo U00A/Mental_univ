@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Plus, MessageCircle, Users, ArrowLeft, Loader2 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 import PostCard from '@/components/community/PostCard';
 import CreatePostModal from '@/components/community/CreatePostModal';
 import { getPostsByCommunity, getCommunities, type Post, type Community } from '@/lib/firestore';
@@ -51,10 +50,7 @@ export default function GroupForum() {
   const IconComponent = community ? ((LucideIcons as any)[community.icon] || Users) : Users;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      <main className="flex-1 pb-24">
+    <div className="animate-fade-in">
         {/* Sub-Header */}
         <div className="bg-white border-b border-border sticky top-16 z-30">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -128,7 +124,6 @@ export default function GroupForum() {
                 </div>
             )}
         </div>
-      </main>
 
       {community && (
         <CreatePostModal 
@@ -140,7 +135,6 @@ export default function GroupForum() {
         />
       )}
 
-      <Footer />
     </div>
   );
 }

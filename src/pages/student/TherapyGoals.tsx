@@ -12,8 +12,7 @@ import {
   X,
   Save
 } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { 
   getTherapyGoals, 
@@ -198,10 +197,7 @@ export default function TherapyGoals() {
     : 0;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div className="space-y-8 animate-fade-in">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-text mb-2">Therapy Goals</h1>
@@ -561,9 +557,6 @@ export default function TherapyGoals() {
             )}
           </div>
         </div>
-      </main>
-
-      <Footer />
     </div>
   );
 }

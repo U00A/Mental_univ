@@ -9,8 +9,7 @@ import {
   CreditCard,
   Shield
 } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { getPsychologistById, createAppointment } from '@/lib/firestore';
 import type { Psychologist } from '@/lib/firestore';
@@ -107,12 +106,8 @@ export default function Booking() {
 
   if (!psychologist) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-text-muted">Psychologist not found</p>
-        </div>
-        <Footer />
+      <div className="flex-1 flex items-center justify-center py-20">
+        <p className="text-text-muted">Psychologist not found</p>
       </div>
     );
   }
@@ -121,10 +116,7 @@ export default function Booking() {
   const sessionInfo = sessionTypes.find(s => s.id === sessionType)!;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div className="space-y-8 animate-fade-in max-w-4xl">
         {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
@@ -445,9 +437,6 @@ export default function Booking() {
             </div>
           </div>
         )}
-      </main>
-
-      <Footer />
     </div>
   );
 }

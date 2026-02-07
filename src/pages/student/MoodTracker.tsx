@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Calendar, TrendingUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { logMood, getMoodHistory } from '@/lib/firestore';
 import type { MoodEntry } from '@/lib/firestore';
@@ -69,10 +68,7 @@ export default function MoodTracker() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div className="space-y-8 animate-fade-in">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-text mb-2">Mood Tracker</h1>
           <p className="text-text-muted">Track how you're feeling and identify patterns</p>
@@ -199,9 +195,6 @@ export default function MoodTracker() {
             </div>
           </div>
         </div>
-      </main>
-
-      <Footer />
     </div>
   );
 }

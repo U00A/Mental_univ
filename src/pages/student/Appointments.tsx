@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Clock, Video, MessageSquare, X, Loader2 } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import { Calendar, Clock, Video, MessageSquare, X, Loader2, Target, Check, ClipboardList } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getAppointments, cancelAppointment, type Appointment } from '@/lib/firestore';
 import PreSessionModal from '@/components/tools/PreSessionModal';
@@ -56,10 +54,7 @@ export default function Appointments() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div className="space-y-8 animate-fade-in">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-text mb-2">My Appointments</h1>
           <p className="text-text-muted">Manage your scheduled sessions</p>
@@ -225,9 +220,6 @@ export default function Appointments() {
             </div>
           </>
         )}
-      </main>
-
-      <Footer />
 
       {selectedAppointmentId && (
         <PreSessionModal 
@@ -254,7 +246,6 @@ export default function Appointments() {
             }}
             appointment={activeAppointment}
             onSuccess={() => {
-                // Refresh data
                 const fetchData = async () => {
                     if (!profile?.uid) return;
                     const data = await getAppointments(profile.uid, profile.role as 'student' | 'psychologist');
@@ -267,6 +258,3 @@ export default function Appointments() {
     </div>
   );
 }
-
-// Add missing icon
-import { Target, Check, ClipboardList } from 'lucide-react';

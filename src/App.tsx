@@ -42,9 +42,18 @@ import Booking from '@/pages/student/Booking';
 
 // Admin Pages
 import AdminDashboard from '@/pages/admin/Dashboard';
-import PsychologistDashboard from '@/pages/psychologist/Dashboard';
+import AdminUsers from '@/pages/admin/Users';
+import AdminModeration from '@/pages/admin/Moderation';
+import AdminSettings from '@/pages/admin/Settings';
 import CrisisAlerts from '@/pages/admin/CrisisAlerts';
+
+// Psychologist Pages
+import PsychologistDashboard from '@/pages/psychologist/Dashboard';
 import PsychologistCalendar from '@/pages/psychologist/Calendar';
+import PsychologistPatients from '@/pages/psychologist/Patients';
+import PsychologistMessages from '@/pages/psychologist/Messages';
+import PsychologistEducation from '@/pages/psychologist/Education';
+import PsychologistEarnings from '@/pages/psychologist/Earnings';
 
 // Shared Components
 function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, allowedRole?: string }) {
@@ -151,11 +160,11 @@ export default function App() {
             <Route path="/psychologist" element={<ProtectedRoute allowedRole="psychologist"><PsychologistLayout /></ProtectedRoute>}>
                <Route index element={<Navigate to="/psychologist/dashboard" replace />} />
                <Route path="dashboard" element={<PsychologistDashboard />} />
-               <Route path="patients" element={<PlaceholderPage title="My Patients" />} />
-<Route path="calendar" element={<PsychologistCalendar />} />
-                <Route path="messages" element={<PlaceholderPage title="Messages" />} />
-               <Route path="education" element={<PlaceholderPage title="Professional Development" />} />
-               <Route path="earnings" element={<PlaceholderPage title="Earnings" />} />
+               <Route path="patients" element={<PsychologistPatients />} />
+               <Route path="calendar" element={<PsychologistCalendar />} />
+               <Route path="messages" element={<PsychologistMessages />} />
+               <Route path="education" element={<PsychologistEducation />} />
+               <Route path="earnings" element={<PsychologistEarnings />} />
                <Route path="settings" element={<PlaceholderPage title="Settings" />} />
                <Route path="profile" element={<PlaceholderPage title="Public Profile" />} />
             </Route>
@@ -164,11 +173,11 @@ export default function App() {
             <Route path="/admin" element={<ProtectedRoute allowedRole="admin"><AdminLayout /></ProtectedRoute>}>
               <Route index element={<Navigate to="/admin/dashboard" replace />} />
               <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="users" element={<PlaceholderPage title="User Management" />} />
+              <Route path="users" element={<AdminUsers />} />
               <Route path="psychologist-applications" element={<PlaceholderPage title="Applications" />} />
-              <Route path="moderation" element={<PlaceholderPage title="Content Moderation" />} />
+              <Route path="moderation" element={<AdminModeration />} />
               <Route path="crisis-alerts" element={<CrisisAlerts />} />
-              <Route path="settings" element={<PlaceholderPage title="Platform Settings" />} />
+              <Route path="settings" element={<AdminSettings />} />
             </Route>
 
             {/* Fallback */}

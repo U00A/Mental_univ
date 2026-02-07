@@ -6,10 +6,10 @@ import {
   TrendingUp,
   Plus,
   X,
-  Save
+  Save,
+  Loader2
 } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { 
   LineChart, 
@@ -20,17 +20,11 @@ import {
   Tooltip, 
   ResponsiveContainer
 } from 'recharts';
+import { addSleepEntry, getSleepEntries, type SleepEntry } from '@/lib/firestore';
 
-interface SleepEntry {
-  id: string;
-  date: Date;
-  bedTime: string;
-  wakeTime: string;
-  quality: 'poor' | 'fair' | 'good' | 'excellent';
-  notes: string;
-}
 
-const qualityConfig = {
+
+const qualityConfig: Record<string, { color: string; label: string; score: number }> = {
   poor: { color: 'bg-red-100 text-red-700', label: 'Poor', score: 1 },
   fair: { color: 'bg-yellow-100 text-yellow-700', label: 'Fair', score: 2 },
   good: { color: 'bg-blue-100 text-blue-700', label: 'Good', score: 3 },
@@ -38,8 +32,9 @@ const qualityConfig = {
 };
 
 export default function WellnessCenter() {
-  useAuth();
+  const { user } = useAuth();
   const [sleepEntries, setSleepEntries] = useState<SleepEntry[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAddEntry, setShowAddEntry] = useState(false);
   const [selectedDate] = useState(new Date());
   
@@ -49,24 +44,20 @@ export default function WellnessCenter() {
   const [quality, setQuality] = useState<SleepEntry['quality']>('good');
   const [notes, setNotes] = useState('');
 
-  // Generate mock sleep data
   useEffect(() => {
-    const mockData: SleepEntry[] = [];
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      const qualities: SleepEntry['quality'][] = ['poor', 'fair', 'good', 'excellent'];
-      mockData.push({
-        id: `sleep-${i}`,
-        date,
-        bedTime: '22:30',
-        wakeTime: '06:30',
-        quality: qualities[Math.floor(Math.random() * 4)],
-        notes: ''
-      });
+    async function fetchEntries() {
+      if (!user) return;
+      try {
+        const data = await getSleepEntries(user.uid);
+        setSleepEntries(data);
+      } catch (error) {
+        console.error('Error fetching sleep entries:', error);
+      } finally {
+        setLoading(false);
+      }
     }
-    setSleepEntries(mockData);
-  }, []);
+    fetchEntries();
+  }, [user]);
 
   const calculateSleepDuration = (bed: string, wake: string) => {
     const [bedHour, bedMin] = bed.split(':').map(Number);
@@ -98,18 +89,32 @@ export default function WellnessCenter() {
     return (total / sleepEntries.length).toFixed(1);
   };
 
-  const handleSave = () => {
-    const newEntry: SleepEntry = {
-      id: Date.now().toString(),
-      date: selectedDate,
-      bedTime,
-      wakeTime,
-      quality,
-      notes
-    };
-    setSleepEntries([...sleepEntries, newEntry]);
-    setShowAddEntry(false);
-    setNotes('');
+  const handleSave = async () => {
+    if (!user) return;
+    
+    try {
+      const newEntryData = {
+        userId: user.uid,
+        date: selectedDate,
+        bedTime,
+        wakeTime,
+        quality,
+        notes
+      };
+      
+      const id = await addSleepEntry(newEntryData);
+      
+      setSleepEntries(prev => [{
+        id,
+        ...newEntryData,
+        createdAt: new Date()
+      } as SleepEntry, ...prev]);
+      
+      setShowAddEntry(false);
+      setNotes('');
+    } catch (error) {
+      console.error('Error saving sleep entry:', error);
+    }
   };
 
   const chartData = sleepEntries.map(entry => ({
@@ -125,11 +130,16 @@ export default function WellnessCenter() {
     { icon: '🧘', title: 'Relaxation', text: 'Practice meditation or deep breathing before bed' },
   ];
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div className="space-y-8 animate-fade-in">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-text mb-2">Wellness Center</h1>
           <p className="text-text-muted">Track your sleep and wellness metrics</p>
@@ -137,7 +147,7 @@ export default function WellnessCenter() {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="card bg-gradient-to-br from-indigo-50 to-indigo-100">
+          <div className="card bg-linear-to-br from-indigo-50 to-indigo-100">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white">
                 <Moon className="w-5 h-5" />
@@ -149,7 +159,7 @@ export default function WellnessCenter() {
             </div>
           </div>
 
-          <div className="card bg-gradient-to-br from-green-50 to-green-100">
+          <div className="card bg-linear-to-br from-green-50 to-green-100">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white">
                 <Activity className="w-5 h-5" />
@@ -161,7 +171,7 @@ export default function WellnessCenter() {
             </div>
           </div>
 
-          <div className="card bg-gradient-to-br from-yellow-50 to-yellow-100">
+          <div className="card bg-linear-to-br from-yellow-50 to-yellow-100">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-white">
                 <Sun className="w-5 h-5" />
@@ -173,7 +183,7 @@ export default function WellnessCenter() {
             </div>
           </div>
 
-          <div className="card bg-gradient-to-br from-purple-50 to-purple-100">
+          <div className="card bg-linear-to-br from-purple-50 to-purple-100">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white">
                 <TrendingUp className="w-5 h-5" />
@@ -342,7 +352,7 @@ export default function WellnessCenter() {
             </div>
 
             {/* Weekly Goal */}
-            <div className="card bg-gradient-to-br from-primary/5 to-purple-50">
+            <div className="card bg-linear-to-br from-primary/5 to-purple-50">
               <h3 className="font-semibold text-text mb-3">Weekly Goal</h3>
               <div className="mb-3">
                 <div className="flex justify-between text-sm mb-1">
@@ -382,9 +392,6 @@ export default function WellnessCenter() {
             </div>
           </div>
         </div>
-      </main>
-
-      <Footer />
     </div>
   );
 }
