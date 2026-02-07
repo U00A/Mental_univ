@@ -50,6 +50,12 @@ import AdminUsers from '@/pages/admin/Users';
 import AdminModeration from '@/pages/admin/Moderation';
 import AdminSettings from '@/pages/admin/Settings';
 import CrisisAlerts from '@/pages/admin/CrisisAlerts';
+import AdminApplications from '@/pages/admin/Applications';
+import AdminAnalytics from '@/pages/admin/Analytics';
+import AdminAppointments from '@/pages/admin/Appointments';
+import AdminCommunities from '@/pages/admin/Communities';
+import AdminAuditLogs from '@/pages/admin/AuditLogs';
+import AdminNotifications from '@/pages/admin/Notifications';
 
 // Psychologist Pages
 import PsychologistDashboard from '@/pages/psychologist/Dashboard';
@@ -180,9 +186,14 @@ export default function App() {
               <Route index element={<Navigate to="/admin/dashboard" replace />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="users" element={<AdminUsers />} />
-              <Route path="psychologist-applications" element={<PlaceholderPage title="Applications" />} />
+              <Route path="applications" element={<AdminApplications />} />
+              <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="appointments" element={<AdminAppointments />} />
+              <Route path="communities" element={<AdminCommunities />} />
               <Route path="moderation" element={<AdminModeration />} />
               <Route path="crisis-alerts" element={<CrisisAlerts />} />
+              <Route path="notifications" element={<AdminNotifications />} />
+              <Route path="audit-logs" element={<AdminAuditLogs />} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>
 

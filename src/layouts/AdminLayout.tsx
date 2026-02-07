@@ -10,7 +10,12 @@ import {
   LogOut,
   User,
   Search,
-  Bell
+  Bell,
+  UserCheck,
+  TrendingUp,
+  Calendar,
+  MessageSquare,
+  ClipboardList
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import UserNav from '@/components/layout/UserNav';
@@ -24,9 +29,15 @@ export default function AdminLayout() {
   const navigation = [
     { name: 'Overview', href: '/admin/dashboard', icon: BarChart2 },
     { name: 'User Management', href: '/admin/users', icon: Users },
+    { name: 'Applications', href: '/admin/applications', icon: UserCheck },
+    { name: 'Appointments', href: '/admin/appointments', icon: Calendar },
+    { name: 'Analytics', href: '/admin/analytics', icon: TrendingUp },
+    { name: 'Communities', href: '/admin/communities', icon: MessageSquare },
     { name: 'Crisis Flags', href: '/admin/crisis-alerts', icon: ShieldAlert },
-    { name: 'Content Moderation', href: '/admin/moderation', icon: FileText },
-    { name: 'Platform Settings', href: '/admin/settings', icon: Settings },
+    { name: 'Moderation', href: '/admin/moderation', icon: FileText },
+    { name: 'Notifications', href: '/admin/notifications', icon: Bell },
+    { name: 'Audit Logs', href: '/admin/audit-logs', icon: ClipboardList },
+    { name: 'Settings', href: '/admin/settings', icon: Settings },
   ];
 
   const handleSignOut = async () => {
