@@ -275,7 +275,7 @@ export default function Communities() {
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold">
+                  <div className="w-12 h-12 rounded-xl bg-linear-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold">
                     {community.name?.charAt(0) || 'C'}
                   </div>
                   <div>

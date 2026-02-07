@@ -7,16 +7,14 @@ import {
   FileCheck,
   Clock,
   Mail,
-  Phone,
   Shield,
   Loader2,
   Plus,
   ChevronDown,
-  ChevronUp,
   AlertCircle
 } from 'lucide-react';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, updateDoc, doc, query, where, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, updateDoc, doc, query, where, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 
 interface PsychologistApplication {
   uid: string;
@@ -26,7 +24,7 @@ interface PsychologistApplication {
   role: 'psychologist';
   verificationStatus: 'pending' | 'approved' | 'rejected';
   status: 'active' | 'pending' | 'suspended';
-  createdAt: any; // Using any to handle Firestore Timestamp
+  createdAt: Timestamp | null; // Using Timestamp to handle Firestore Timestamp
   // Professional info
   title?: string;
   licenseNumber?: string;
@@ -42,7 +40,7 @@ interface PsychologistApplication {
   // Application documents
   applicationNotes?: string;
   rejectionReason?: string;
-  verifiedAt?: any;
+  verifiedAt?: Timestamp | null;
   verifiedBy?: string;
 }
 
@@ -317,7 +315,7 @@ export default function Applications() {
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* ... User Info Section (Same as before) ... */}
                   <div className="shrink-0">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-2xl font-bold text-white"> {/* Adjusted colors for consistency */}
+                    <div className="w-20 h-20 rounded-full bg-linear-to-br from-red-500 to-orange-500 flex items-center justify-center text-2xl font-bold text-white"> {/* Adjusted colors for consistency */}
                       {app.photoURL ? (
                         <img src={app.photoURL} alt={app.displayName} className="w-full h-full rounded-full object-cover" />
                       ) : (

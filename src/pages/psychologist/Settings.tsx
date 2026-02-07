@@ -35,7 +35,7 @@ export default function PsychologistSettings() {
     fetchProfile();
   }, [user]);
 
-  const handleChange = (field: keyof Psychologist, value: any) => {
+  const handleChange = (field: keyof Psychologist, value: string | number | boolean | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

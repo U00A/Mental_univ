@@ -30,6 +30,20 @@ interface AnalyticsData {
   appointmentsLastWeek: number;
 }
 
+// Types for Firestore data
+interface UserData {
+  id: string;
+  role: string;
+  createdAt?: { toDate?: () => Date } | Date | null;
+  lastActive?: { toDate?: () => Date } | Date | null;
+}
+
+interface AppointmentData {
+  id: string;
+  status: string;
+  date?: { toDate?: () => Date } | Date | null;
+}
+
 interface DateRange {
   label: string;
   value: 'week' | 'month' | 'quarter' | 'year';
@@ -61,135 +75,121 @@ export default function Analytics() {
   });
 
   useEffect(() => {
+    async function fetchAnalytics() {
+      try {
+        setLoading(true);
+        
+        // Fetch users
+        const usersSnapshot = await getDocs(collection(db, 'users'));
+        const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as UserData[];
+        
+        const totalUsers = users.length;
+        const totalStudents = users.filter((u) => u.role === 'student').length;
+        const totalPsychologists = users.filter((u) => u.role === 'psychologist').length;
+        
+        // Calculate new users
+        const now = new Date();
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+        
+        const newUsersThisWeek = users.filter((u) => {
+          if (!u.createdAt) return false;
+          const createdAt = u.createdAt as { toDate?: () => Date } | Date;
+          const created = typeof createdAt === 'object' && 'toDate' in createdAt && createdAt.toDate 
+            ? createdAt.toDate() 
+            : new Date(createdAt as unknown as string);
+          return created >= weekAgo;
+        }).length;
+        
+        const newUsersLastWeek = users.filter((u) => {
+          if (!u.createdAt) return false;
+          const createdAt = u.createdAt as { toDate?: () => Date } | Date;
+          const created = typeof createdAt === 'object' && 'toDate' in createdAt && createdAt.toDate 
+            ? createdAt.toDate() 
+            : new Date(createdAt as unknown as string);
+          return created >= twoWeeksAgo && created < weekAgo;
+        }).length;
+
+        // Fetch appointments
+        let totalAppointments = 0;
+        let completedSessions = 0;
+        let cancelledSessions = 0;
+        let appointmentsThisWeek = 0;
+        let appointmentsLastWeek = 0;
+        
+        try {
+          const appointmentsSnapshot = await getDocs(collection(db, 'appointments'));
+          const appointments = appointmentsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as AppointmentData[];
+          
+          totalAppointments = appointments.length;
+          completedSessions = appointments.filter((a) => a.status === 'completed').length;
+          cancelledSessions = appointments.filter((a) => a.status === 'cancelled').length;
+          
+          appointmentsThisWeek = appointments.filter((a) => {
+            if (!a.date) return false;
+            const dateVal = a.date as { toDate?: () => Date } | Date;
+            const date = typeof dateVal === 'object' && 'toDate' in dateVal && dateVal.toDate 
+              ? dateVal.toDate() 
+              : new Date(dateVal as unknown as string);
+            return date >= weekAgo;
+          }).length;
+          
+          appointmentsLastWeek = appointments.filter((a) => {
+            if (!a.date) return false;
+            const dateVal = a.date as { toDate?: () => Date } | Date;
+            const date = typeof dateVal === 'object' && 'toDate' in dateVal && dateVal.toDate 
+              ? dateVal.toDate() 
+              : new Date(dateVal as unknown as string);
+            return date >= twoWeeksAgo && date < weekAgo;
+          }).length;
+        } catch {
+          console.log('No appointments collection yet');
+        }
+
+        // Fetch messages count
+        let totalMessages = 0;
+        try {
+          const messagesSnapshot = await getDocs(collection(db, 'messages'));
+          totalMessages = messagesSnapshot.size;
+        } catch {
+          console.log('No messages collection yet');
+        }
+
+        // Calculate active today (simplified - users who logged in today)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const activeToday = users.filter((u) => {
+          if (!u.lastActive) return false;
+          const lastActiveVal = u.lastActive as { toDate?: () => Date } | Date;
+          const lastActive = typeof lastActiveVal === 'object' && 'toDate' in lastActiveVal && lastActiveVal.toDate 
+            ? lastActiveVal.toDate() 
+            : new Date(lastActiveVal as unknown as string);
+          return lastActive >= today;
+        }).length;
+
+        setData({
+          totalUsers,
+          totalStudents,
+          totalPsychologists,
+          totalAppointments,
+          completedSessions,
+          cancelledSessions,
+          totalMessages,
+          activeToday,
+          newUsersThisWeek,
+          newUsersLastWeek,
+          appointmentsThisWeek,
+          appointmentsLastWeek
+        });
+      } catch (err) {
+        console.error('Error fetching analytics:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     fetchAnalytics();
   }, [dateRange]);
-
-  // Types for Firestore data
-  interface UserData {
-    id: string;
-    role: string;
-    createdAt?: { toDate?: () => Date } | Date | null;
-    lastActive?: { toDate?: () => Date } | Date | null;
-  }
-
-  interface AppointmentData {
-    id: string;
-    status: string;
-    date?: { toDate?: () => Date } | Date | null;
-  }
-
-  async function fetchAnalytics() {
-    try {
-      setLoading(true);
-      
-      // Fetch users
-      const usersSnapshot = await getDocs(collection(db, 'users'));
-      const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as UserData[];
-      
-      const totalUsers = users.length;
-      const totalStudents = users.filter((u) => u.role === 'student').length;
-      const totalPsychologists = users.filter((u) => u.role === 'psychologist').length;
-      
-      // Calculate new users
-      const now = new Date();
-      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
-      
-      const newUsersThisWeek = users.filter((u) => {
-        if (!u.createdAt) return false;
-        const createdAt = u.createdAt as { toDate?: () => Date } | Date;
-        const created = typeof createdAt === 'object' && 'toDate' in createdAt && createdAt.toDate 
-          ? createdAt.toDate() 
-          : new Date(createdAt as unknown as string);
-        return created >= weekAgo;
-      }).length;
-      
-      const newUsersLastWeek = users.filter((u) => {
-        if (!u.createdAt) return false;
-        const createdAt = u.createdAt as { toDate?: () => Date } | Date;
-        const created = typeof createdAt === 'object' && 'toDate' in createdAt && createdAt.toDate 
-          ? createdAt.toDate() 
-          : new Date(createdAt as unknown as string);
-        return created >= twoWeeksAgo && created < weekAgo;
-      }).length;
-
-      // Fetch appointments
-      let totalAppointments = 0;
-      let completedSessions = 0;
-      let cancelledSessions = 0;
-      let appointmentsThisWeek = 0;
-      let appointmentsLastWeek = 0;
-      
-      try {
-        const appointmentsSnapshot = await getDocs(collection(db, 'appointments'));
-        const appointments = appointmentsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as AppointmentData[];
-        
-        totalAppointments = appointments.length;
-        completedSessions = appointments.filter((a) => a.status === 'completed').length;
-        cancelledSessions = appointments.filter((a) => a.status === 'cancelled').length;
-        
-        appointmentsThisWeek = appointments.filter((a) => {
-          if (!a.date) return false;
-          const dateVal = a.date as { toDate?: () => Date } | Date;
-          const date = typeof dateVal === 'object' && 'toDate' in dateVal && dateVal.toDate 
-            ? dateVal.toDate() 
-            : new Date(dateVal as unknown as string);
-          return date >= weekAgo;
-        }).length;
-        
-        appointmentsLastWeek = appointments.filter((a) => {
-          if (!a.date) return false;
-          const dateVal = a.date as { toDate?: () => Date } | Date;
-          const date = typeof dateVal === 'object' && 'toDate' in dateVal && dateVal.toDate 
-            ? dateVal.toDate() 
-            : new Date(dateVal as unknown as string);
-          return date >= twoWeeksAgo && date < weekAgo;
-        }).length;
-      } catch {
-        console.log('No appointments collection yet');
-      }
-
-      // Fetch messages count
-      let totalMessages = 0;
-      try {
-        const messagesSnapshot = await getDocs(collection(db, 'messages'));
-        totalMessages = messagesSnapshot.size;
-      } catch {
-        console.log('No messages collection yet');
-      }
-
-      // Calculate active today (simplified - users who logged in today)
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const activeToday = users.filter((u) => {
-        if (!u.lastActive) return false;
-        const lastActiveVal = u.lastActive as { toDate?: () => Date } | Date;
-        const lastActive = typeof lastActiveVal === 'object' && 'toDate' in lastActiveVal && lastActiveVal.toDate 
-          ? lastActiveVal.toDate() 
-          : new Date(lastActiveVal as unknown as string);
-        return lastActive >= today;
-      }).length;
-
-      setData({
-        totalUsers,
-        totalStudents,
-        totalPsychologists,
-        totalAppointments,
-        completedSessions,
-        cancelledSessions,
-        totalMessages,
-        activeToday,
-        newUsersThisWeek,
-        newUsersLastWeek,
-        appointmentsThisWeek,
-        appointmentsLastWeek
-      });
-    } catch (err) {
-      console.error('Error fetching analytics:', err);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   const handleExport = () => {
     const csvContent = `
@@ -417,7 +417,7 @@ Total Messages,${data.totalMessages}
               <div className="flex items-center gap-3">
                 <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-500"
+                    className="h-full bg-linear-to-r from-green-400 to-green-600 rounded-full transition-all duration-500"
                     style={{ width: `${data.totalAppointments > 0 ? (data.completedSessions / data.totalAppointments) * 100 : 0}%` }}
                   />
                 </div>

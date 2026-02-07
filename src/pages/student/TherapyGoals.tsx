@@ -214,7 +214,7 @@ export default function TherapyGoals() {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="card bg-gradient-to-br from-primary/5 to-primary/10">
+          <div className="card bg-linear-to-br from-primary/5 to-primary/10">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
                 <Target className="w-5 h-5" />
@@ -226,7 +226,7 @@ export default function TherapyGoals() {
             </div>
           </div>
           
-          <div className="card bg-gradient-to-br from-green-50 to-green-100">
+          <div className="card bg-linear-to-br from-green-50 to-green-100">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white">
                 <CheckCircle2 className="w-5 h-5" />
@@ -238,7 +238,7 @@ export default function TherapyGoals() {
             </div>
           </div>
           
-          <div className="card bg-gradient-to-br from-blue-50 to-blue-100">
+          <div className="card bg-linear-to-br from-blue-50 to-blue-100">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white">
                 <TrendingUp className="w-5 h-5" />
@@ -250,7 +250,7 @@ export default function TherapyGoals() {
             </div>
           </div>
           
-          <div className="card bg-gradient-to-br from-purple-50 to-purple-100">
+          <div className="card bg-linear-to-br from-purple-50 to-purple-100">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white">
                 <Trophy className="w-5 h-5" />

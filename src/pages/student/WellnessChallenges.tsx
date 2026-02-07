@@ -4,7 +4,6 @@ import {
   Target, 
   Flame, 
   Zap, 
-  Award,
   Moon,
   Loader2
 } from 'lucide-react';
