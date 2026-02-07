@@ -14,10 +14,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
-  Calendar
+  Calendar,
+  RefreshCw
 } from 'lucide-react';
 import { db } from '@/lib/firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
 
 interface AuditLog {
   id: string;
@@ -31,90 +32,10 @@ interface AuditLog {
   targetName?: string;
   details?: string;
   ipAddress?: string;
-  timestamp: { seconds: number } | null;
+  timestamp: Timestamp | null;
 }
 
 type FilterType = 'all' | 'create' | 'update' | 'delete' | 'login' | 'logout' | 'approve' | 'reject';
-
-// Mock data for demonstration - in production, this would come from Firestore
-const mockLogs: AuditLog[] = [
-  {
-    id: '1',
-    action: 'Approved psychologist application',
-    actionType: 'approve',
-    userId: 'admin1',
-    userName: 'Admin User',
-    userRole: 'admin',
-    targetType: 'user',
-    targetId: 'psy1',
-    targetName: 'Dr. Sarah Johnson',
-    timestamp: { seconds: Date.now() / 1000 - 3600 }
-  },
-  {
-    id: '2',
-    action: 'User logged in',
-    actionType: 'login',
-    userId: 'admin1',
-    userName: 'Admin User',
-    userRole: 'admin',
-    ipAddress: '192.168.1.1',
-    timestamp: { seconds: Date.now() / 1000 - 7200 }
-  },
-  {
-    id: '3',
-    action: 'Updated platform settings',
-    actionType: 'update',
-    userId: 'admin1',
-    userName: 'Admin User',
-    userRole: 'admin',
-    targetType: 'settings',
-    details: 'Changed maintenance mode to disabled',
-    timestamp: { seconds: Date.now() / 1000 - 86400 }
-  },
-  {
-    id: '4',
-    action: 'Created new community',
-    actionType: 'create',
-    userId: 'admin1',
-    userName: 'Admin User',
-    userRole: 'admin',
-    targetType: 'community',
-    targetName: 'Anxiety Support Group',
-    timestamp: { seconds: Date.now() / 1000 - 172800 }
-  },
-  {
-    id: '5',
-    action: 'Rejected psychologist application',
-    actionType: 'reject',
-    userId: 'admin1',
-    userName: 'Admin User',
-    userRole: 'admin',
-    targetType: 'user',
-    targetName: 'John Doe',
-    details: 'Incomplete credentials',
-    timestamp: { seconds: Date.now() / 1000 - 259200 }
-  },
-  {
-    id: '6',
-    action: 'Deleted user account',
-    actionType: 'delete',
-    userId: 'admin1',
-    userName: 'Admin User',
-    userRole: 'admin',
-    targetType: 'user',
-    targetName: 'Spam Account',
-    timestamp: { seconds: Date.now() / 1000 - 345600 }
-  },
-  {
-    id: '7',
-    action: 'User logged out',
-    actionType: 'logout',
-    userId: 'admin1',
-    userName: 'Admin User',
-    userRole: 'admin',
-    timestamp: { seconds: Date.now() / 1000 - 432000 }
-  }
-];
 
 export default function AuditLogs() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
@@ -132,31 +53,36 @@ export default function AuditLogs() {
   async function fetchLogs() {
     try {
       setLoading(true);
-      // Try to fetch from Firestore first
-      try {
-        const snapshot = await getDocs(collection(db, 'auditLogs'));
-        if (snapshot.size > 0) {
-          const fetchedLogs = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          })) as AuditLog[];
-          setLogs(fetchedLogs.sort((a, b) => 
-            (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0)
-          ));
-        } else {
-          // Use mock data if no logs exist yet
-          setLogs(mockLogs);
-        }
-      } catch {
-        // Fallback to mock data
-        setLogs(mockLogs);
+      const logsQuery = query(
+        collection(db, 'auditLogs'),
+        orderBy('timestamp', 'desc')
+      );
+      const snapshot = await getDocs(logsQuery);
+      
+      if (snapshot.size > 0) {
+        const fetchedLogs = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as AuditLog[];
+        setLogs(fetchedLogs);
+      } else {
+        // No logs - real data scenario
+        setLogs([]);
       }
+    } catch (err) {
+      console.error('Error fetching audit logs:', err);
+      setLogs([]);
     } finally {
       setLoading(false);
     }
   }
 
   const handleExport = () => {
+    if (filteredLogs.length === 0) {
+      alert('No logs to export');
+      return;
+    }
+    
     const csvContent = [
       'Timestamp,Action,Action Type,User,Role,Target,Details',
       ...filteredLogs.map(log => 
@@ -173,9 +99,9 @@ export default function AuditLogs() {
     window.URL.revokeObjectURL(url);
   };
 
-  const formatTimestamp = (timestamp: { seconds: number } | null) => {
+  const formatTimestamp = (timestamp: Timestamp | null) => {
     if (!timestamp) return 'Unknown';
-    const date = new Date(timestamp.seconds * 1000);
+    const date = timestamp.toDate ? timestamp.toDate() : new Date();
     return date.toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -185,9 +111,10 @@ export default function AuditLogs() {
     });
   };
 
-  const getTimeAgo = (timestamp: { seconds: number } | null) => {
+  const getTimeAgo = (timestamp: Timestamp | null) => {
     if (!timestamp) return 'Unknown';
-    const seconds = Math.floor(Date.now() / 1000 - timestamp.seconds);
+    const date = timestamp.toDate ? timestamp.toDate() : new Date();
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
     if (seconds < 60) return 'Just now';
     if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
     if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
@@ -230,13 +157,15 @@ export default function AuditLogs() {
       log.targetName?.toLowerCase().includes(searchQuery.toLowerCase());
     
     let matchesDate = true;
-    if (dateRange.start) {
-      const startDate = new Date(dateRange.start).getTime() / 1000;
-      matchesDate = matchesDate && (log.timestamp?.seconds || 0) >= startDate;
+    if (dateRange.start && log.timestamp) {
+      const startDate = new Date(dateRange.start).getTime();
+      const logDate = log.timestamp.toDate ? log.timestamp.toDate().getTime() : 0;
+      matchesDate = matchesDate && logDate >= startDate;
     }
-    if (dateRange.end) {
-      const endDate = new Date(dateRange.end).getTime() / 1000 + 86400; // Include end day
-      matchesDate = matchesDate && (log.timestamp?.seconds || 0) <= endDate;
+    if (dateRange.end && log.timestamp) {
+      const endDate = new Date(dateRange.end).getTime() + 86400000; // Include end day
+      const logDate = log.timestamp.toDate ? log.timestamp.toDate().getTime() : 0;
+      matchesDate = matchesDate && logDate <= endDate;
     }
     
     return matchesType && matchesSearch && matchesDate;
@@ -275,13 +204,23 @@ export default function AuditLogs() {
           <h1 className="text-2xl font-bold text-gray-900">Audit Logs</h1>
           <p className="text-gray-500">Track all administrative actions and system events</p>
         </div>
-        <button
-          onClick={handleExport}
-          className="flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors font-medium"
-        >
-          <Download className="w-4 h-4" />
-          Export Logs
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={fetchLogs}
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Refresh
+          </button>
+          <button
+            onClick={handleExport}
+            disabled={filteredLogs.length === 0}
+            className="flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors font-medium disabled:opacity-50"
+          >
+            <Download className="w-4 h-4" />
+            Export Logs
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -350,10 +289,16 @@ export default function AuditLogs() {
 
       {/* Logs Table */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        {paginatedLogs.length === 0 ? (
+        {logs.length === 0 ? (
           <div className="text-center py-12">
             <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500">No logs found</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No audit logs yet</h3>
+            <p className="text-gray-500">Administrative actions will be logged here</p>
+          </div>
+        ) : paginatedLogs.length === 0 ? (
+          <div className="text-center py-12">
+            <Search className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+            <p className="text-gray-500">No logs match your filters</p>
           </div>
         ) : (
           <>
@@ -393,7 +338,7 @@ export default function AuditLogs() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-sm font-medium">
+                          <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 text-sm font-medium">
                             {log.userName?.charAt(0) || '?'}
                           </div>
                           <div>
