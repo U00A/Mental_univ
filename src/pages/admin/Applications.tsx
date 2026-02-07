@@ -359,9 +359,9 @@ export default function Applications() {
       </div>
 
       {selectedApp && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-gray-50/80 backdrop-blur-md z-10">
+        <div className="fixed inset-0 bg-white/40 backdrop-blur-xl flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
+          <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all animate-in zoom-in-95 duration-300">
+            <div className="px-8 py-6 border-b border-gray-100/50 flex items-center justify-between sticky top-0 bg-white/20 backdrop-blur-md z-10">
               <h2 className="text-xl font-bold text-gray-900">Application Details</h2>
               <button 
                 onClick={() => setSelectedApp(null)}
@@ -476,8 +476,8 @@ export default function Applications() {
 
       {/* Reject Modal */}
       {showRejectModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 bg-white/40 backdrop-blur-xl flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
+          <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] p-8 max-w-md w-full transform transition-all animate-in zoom-in-95 duration-300">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 bg-red-100 rounded-xl">
                 <AlertCircle className="w-6 h-6 text-red-600" />
@@ -528,8 +528,8 @@ export default function Applications() {
 
       {/* Add Psychologist Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl my-8 animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 bg-white/40 backdrop-blur-xl flex items-center justify-center z-50 p-4 overflow-y-auto animate-in fade-in duration-300">
+          <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] w-full max-w-2xl my-8 transform transition-all animate-in zoom-in-95 duration-300">
             <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-red-100 rounded-lg">

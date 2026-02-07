@@ -367,10 +367,10 @@ export default function Notifications() {
 
       {/* Compose Modal */}
       {showComposeModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-8 animate-in fade-in zoom-in duration-200">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-              <h2 className="text-lg font-bold text-gray-900">Compose Notification</h2>
+        <div className="fixed inset-0 bg-white/40 backdrop-blur-xl flex items-center justify-center z-50 p-4 overflow-y-auto animate-in fade-in duration-300">
+          <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] w-full max-w-lg my-8 transform transition-all animate-in zoom-in-95 duration-300">
+            <div className="px-8 py-6 border-b border-gray-100/50 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900">Compose Notification</h2>
               <button
                 onClick={() => {
                   setShowComposeModal(false);

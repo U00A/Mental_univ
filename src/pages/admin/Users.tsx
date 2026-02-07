@@ -275,49 +275,54 @@ export default function UsersPage() {
 
       {/* Add User Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-              <h2 className="text-lg font-bold text-gray-900">Add New User</h2>
+        <div className="fixed inset-0 bg-white/40 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] w-full max-w-md overflow-hidden transform transition-all animate-in zoom-in-95 duration-300">
+            <div className="px-8 py-6 border-b border-gray-100/50 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-red-50 rounded-2xl">
+                  <UserPlus className="w-5 h-5 text-red-600" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900">Add New User</h2>
+              </div>
               <button 
                 onClick={() => setShowAddModal(false)}
-                className="p-2 hover:bg-gray-200/50 rounded-lg transition-colors text-gray-500"
+                className="p-2 hover:bg-gray-100/50 rounded-xl transition-colors text-gray-400 hover:text-gray-600"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             
-            <form onSubmit={handleCreateUser} className="p-6 space-y-4">
+            <form onSubmit={handleCreateUser} className="p-8 space-y-5">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Full Name</label>
+                <label className="text-sm font-semibold text-gray-700 ml-1">Full Name</label>
                 <input
                   type="text"
                   required
                   value={newUser.displayName}
                   onChange={e => setNewUser(prev => ({ ...prev, displayName: e.target.value }))}
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all outline-none"
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all outline-none"
                   placeholder="John Doe"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Email Address</label>
+                <label className="text-sm font-semibold text-gray-700 ml-1">Email Address</label>
                 <input
                   type="email"
                   required
                   value={newUser.email}
                   onChange={e => setNewUser(prev => ({ ...prev, email: e.target.value }))}
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all outline-none"
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all outline-none"
                   placeholder="john@example.com"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Role</label>
+                <label className="text-sm font-semibold text-gray-700 ml-1">Role</label>
                 <select
                   value={newUser.role}
                   onChange={e => setNewUser(prev => ({ ...prev, role: e.target.value as User['role'] }))}
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all outline-none"
+                  className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all outline-none appearance-none"
                 >
                   <option value="student">Student</option>
                   <option value="psychologist">Psychologist</option>
@@ -325,22 +330,22 @@ export default function UsersPage() {
                 </select>
               </div>
 
-              <div className="pt-4 flex gap-3">
+              <div className="pt-4 flex gap-4">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 px-4 py-2.5 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-medium transition-colors"
+                  className="flex-1 px-4 py-3.5 border border-gray-200 text-gray-700 rounded-2xl hover:bg-gray-50 font-semibold transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={creating}
-                  className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 font-medium transition-colors flex items-center justify-center gap-2 shadow-lg shadow-red-600/20"
+                  className="flex-1 px-4 py-3.5 bg-red-600 text-white rounded-2xl hover:bg-red-700 font-semibold transition-all flex items-center justify-center gap-2 shadow-xl shadow-red-600/20 active:scale-[0.98]"
                 >
                   {creating ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-5 h-5 animate-spin" />
                       Creating...
                     </>
                   ) : (
