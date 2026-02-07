@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Bell, User, LogOut, ChevronLeft, Menu, X, Wind } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -12,7 +12,7 @@ export default function Header() {
   const [isPanicOpen, setIsPanicOpen] = useState(false);
 
   // Routes where the back button should NOT appear
-  const mainRoutes = ['/student/dashboard', '/psychologist/dashboard', '/admin/dashboard', '/', '/login', '/register'];
+  const mainRoutes = ['/dashboard', '/', '/login', '/register'];
   const showBackButton = !mainRoutes.includes(location.pathname);
 
   const handleSignOut = async () => {
@@ -21,40 +21,15 @@ export default function Header() {
     setIsMenuOpen(false);
   };
 
-  // Role-aware navigation links
-  const navLinks = useMemo(() => {
-    const role = profile?.role || 'student';
-    
-    if (role === 'psychologist') {
-      return [
-        { name: 'Dashboard', path: '/psychologist/dashboard' },
-        { name: 'Patients', path: '/psychologist/patients' },
-        { name: 'Calendar', path: '/psychologist/calendar' },
-        { name: 'Messages', path: '/psychologist/messages' },
-        { name: 'Earnings', path: '/psychologist/earnings' },
-      ];
-    }
-    
-    if (role === 'admin') {
-      return [
-        { name: 'Dashboard', path: '/admin/dashboard' },
-        { name: 'Users', path: '/admin/users' },
-        { name: 'Applications', path: '/admin/psychologist-applications' },
-        { name: 'Crisis Alerts', path: '/admin/crisis-alerts' },
-        { name: 'Settings', path: '/admin/settings' },
-      ];
-    }
-    
-    // Default: Student
-    return [
-      { name: 'Dashboard', path: '/student/dashboard' },
-      { name: 'Psychologists', path: '/student/psychologists' },
-      { name: 'Appointments', path: '/student/appointments' },
-      { name: 'Community', path: '/student/groups' },
-      { name: 'Wellness', path: '/student/wellness' },
-      { name: 'Resources', path: '/student/resources' },
-    ];
-  }, [profile?.role]);
+  const navLinks = [
+    { name: 'Dashboard', path: '/dashboard' },
+    { name: 'Psychologists', path: '/psychologists' },
+    { name: 'Appointments', path: '/appointments' },
+    { name: 'Community', path: '/community' },
+    { name: 'Insights', path: '/insights' },
+    { name: 'Messages', path: '/messages' },
+    { name: 'Resources', path: '/resources' },
+  ];
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-white/50">

@@ -12,7 +12,8 @@ import {
   ArrowRight,
   Sparkles,
   Zap,
-  Brain
+  Brain,
+  MessageSquare
 } from 'lucide-react';
 import { getAppointments, type Appointment } from '@/lib/firestore';
 
@@ -49,15 +50,15 @@ export default function StudentDashboard() {
       title: 'Find a Psychologist',
       desc: 'Browse verified professionals for therapy.',
       icon: Users,
-      color: 'bg-blue-50 text-blue-600',
+      color: 'from-blue-500 to-indigo-600',
       href: '/student/psychologists',
       action: 'Book Now'
     },
     {
       title: 'Wellness Tools',
       desc: 'Mood tracking, journaling, and goals.',
-      icon: ActivityIcon, 
-      color: 'bg-green-50 text-green-600',
+      icon: Heart, 
+      color: 'from-green-500 to-teal-600',
       href: '/student/wellness',
       action: 'Open Tools'
     },
@@ -65,7 +66,7 @@ export default function StudentDashboard() {
       title: 'Community Groups',
       desc: 'Connect with peers in safe spaces.',
       icon: Leaf,
-      color: 'bg-teal-50 text-teal-600',
+      color: 'from-teal-500 to-cyan-600',
       href: '/student/groups',
       action: 'Join Discussion'
     },
@@ -73,7 +74,7 @@ export default function StudentDashboard() {
       title: 'Resources',
       desc: 'Articles, videos, and self-help guides.',
       icon: BookOpen,
-      color: 'bg-purple-50 text-purple-600',
+      color: 'from-purple-500 to-violet-600',
       href: '/student/resources',
       action: 'Learn'
     },
@@ -81,7 +82,7 @@ export default function StudentDashboard() {
       title: 'Safety Plan',
       desc: 'Your emergency coping strategy.',
       icon: Shield,
-      color: 'bg-red-50 text-red-600',
+      color: 'from-red-500 to-rose-600',
       href: '/student/safety-plan',
       action: 'View Plan'
     },
@@ -89,7 +90,7 @@ export default function StudentDashboard() {
       title: 'Challenges',
       desc: 'Daily tasks to boost your mental health.',
       icon: Trophy,
-      color: 'bg-orange-50 text-orange-600',
+      color: 'from-orange-500 to-amber-600',
       href: '/student/challenges',
       action: 'Start Challenge'
     }
@@ -98,7 +99,7 @@ export default function StudentDashboard() {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-8 sm:p-10 shadow-xl shadow-indigo-900/20">
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary-dark text-white p-8 sm:p-10 shadow-xl">
         <div className="relative z-10 max-w-2xl">
           <div className="flex items-center gap-2 mb-4">
             <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold backdrop-blur-sm border border-white/10 uppercase tracking-wider">
@@ -108,30 +109,30 @@ export default function StudentDashboard() {
           <h1 className="text-3xl sm:text-4xl font-bold mb-4 tracking-tight">
             {greeting}, {profile?.displayName?.split(' ')[0] || 'Student'}!
           </h1>
-          <p className="text-indigo-100 text-lg mb-8 leading-relaxed max-w-lg">
+          <p className="text-white/80 text-lg mb-8 leading-relaxed max-w-lg">
             Ready to take care of your mind today? Choose a tool below or check your upcoming schedule.
           </p>
           <div className="flex flex-wrap gap-4">
             <button 
               onClick={() => navigate('/student/wellness')}
-              className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-xl shadow-sm hover:bg-indigo-50 transition-colors flex items-center gap-2"
+              className="px-6 py-3 bg-white text-primary font-semibold rounded-xl shadow-sm hover:bg-gray-50 transition-colors flex items-center gap-2"
             >
               <Heart className="w-5 h-5" />
               Check In
             </button>
             <button 
-              onClick={() => navigate('/student/journal')}
-              className="px-6 py-3 bg-indigo-500/30 text-white font-semibold rounded-xl backdrop-blur-md border border-white/20 hover:bg-indigo-500/40 transition-colors flex items-center gap-2"
+              onClick={() => navigate('/student/messages')}
+              className="px-6 py-3 bg-white/20 text-white font-semibold rounded-xl backdrop-blur-md border border-white/20 hover:bg-white/30 transition-colors flex items-center gap-2"
             >
-              <BookOpen className="w-5 h-5" />
-              Journal
+              <MessageSquare className="w-5 h-5" />
+              Messages
             </button>
           </div>
         </div>
         
         {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/20 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4" />
       </section>
 
       {/* Status Bar: Next Appointment & Daily Inspiration */}
@@ -174,7 +175,7 @@ export default function StudentDashboard() {
         </div>
 
         {/* Daily Insight / Quick Action */}
-        <div className="bg-linear-to-br from-primary to-primary-dark rounded-2xl p-6 text-white shadow-lg overflow-hidden relative">
+        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 shadow-sm border border-amber-100 overflow-hidden relative">
            <div className="flex items-start justify-between mb-4">
             <div className="p-3 bg-white text-amber-500 rounded-xl shadow-sm">
               <Sparkles className="w-6 h-6" />
@@ -195,47 +196,30 @@ export default function StudentDashboard() {
       </div>
 
       {/* Feature Grid */}
-      <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-        <Brain className="w-5 h-5 text-gray-400" />
-        Explore Features
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {features.map((feature) => (
-          <Link 
-            key={feature.title} 
-            to={feature.href}
-            className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-primary/20 transition-all group flex flex-col"
-          >
-            <div className={`p-3 rounded-xl bg-linear-to-br ${feature.color} w-fit mb-4 group-hover:scale-110 transition-transform duration-300`}>
-              <feature.icon className="w-6 h-6" />
-            </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>
-            <p className="text-gray-500 text-sm mb-6 flex-1">{feature.desc}</p>
-            <div className="flex items-center text-sm font-semibold text-gray-400 group-hover:text-primary transition-colors">
-              {feature.action} <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
-        ))}
+      <div>
+        <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2 mb-6">
+          <Brain className="w-5 h-5 text-gray-400" />
+          Explore Features
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((feature) => (
+            <Link 
+              key={feature.title} 
+              to={feature.href}
+              className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-primary/20 transition-all group flex flex-col"
+            >
+              <div className={`p-3 rounded-xl bg-gradient-to-br ${feature.color} w-fit mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                <feature.icon className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>
+              <p className="text-gray-500 text-sm mb-6 flex-1">{feature.desc}</p>
+              <div className="flex items-center text-sm font-semibold text-gray-400 group-hover:text-primary transition-colors">
+                {feature.action} <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
-  );
-}
-
-function ActivityIcon(props: any) {
-  return (
-    <svg 
-      {...props}
-      xmlns="http://www.w3.org/2000/svg" 
-      width="24" 
-      height="24" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    >
-      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-    </svg>
   );
 }

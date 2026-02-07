@@ -12,8 +12,7 @@ import {
   Activity,
   Plus,
   FileText,
-  Bell,
-  Home
+  Bell
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -102,14 +101,14 @@ export default function PsychologistDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="flex items-center justify-center py-20">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50/50 p-6 space-y-8">
+    <div className="space-y-8 animate-fade-in">
       {/* Welcome Section */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -119,13 +118,6 @@ export default function PsychologistDashboard() {
           <p className="text-gray-500 mt-1">Here's an overview of your practice today.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button 
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
-          >
-            <Home className="w-4 h-4" />
-            Home
-          </button>
           <button 
             onClick={() => navigate('/psychologist/calendar')}
             className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
@@ -293,7 +285,7 @@ export default function PsychologistDashboard() {
         {/* Right Column (Sidebar) */}
         <div className="space-y-6">
           {/* Quick Actions */}
-          <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg shadow-indigo-200">
+          <div className="bg-gradient-to-br from-primary to-primary-dark rounded-2xl p-6 text-white shadow-lg">
             <h3 className="text-lg font-bold mb-4">Quick Actions</h3>
             <div className="grid grid-cols-2 gap-3">
               <ActionButton icon={FileText} label="Notes" onClick={() => {}} />
