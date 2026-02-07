@@ -31,24 +31,41 @@ export default function Psychologists() {
     async function fetchData() {
       try {
         setLoading(true);
+        setError('');
         const data = await getPsychologists();
         setPsychologists(data);
 
         if (user) {
-          const prefs = await getMatchingPreferences(user.uid);
-          setHasPreferences(!!prefs);
+          try {
+            const prefs = await getMatchingPreferences(user.uid);
+            setHasPreferences(!!prefs);
 
-          if (prefs) {
-            const matched = await getMatchedPsychologists(user.uid);
-            setMatchedPsychologists(matched);
+            if (prefs) {
+              const matched = await getMatchedPsychologists(user.uid);
+              setMatchedPsychologists(matched);
+            }
+          } catch (prefErr) {
+            console.warn('Error fetching preferences:', prefErr);
           }
 
-          const favs = await getFavorites(user.uid);
-          setFavorites(favs);
+          try {
+            const favs = await getFavorites(user.uid);
+            setFavorites(favs);
+          } catch (favErr) {
+            console.warn('Error fetching favorites:', favErr);
+          }
         }
       } catch (err) {
         console.error('Error fetching psychologists:', err);
-        setError('Failed to load psychologists. Please try again later.');
+        // Check for specific Firebase errors
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+        if (errorMessage.includes('index')) {
+          setError('Database configuration issue. Please contact support.');
+        } else if (errorMessage.includes('permission')) {
+          setError('Permission denied. Please login again.');
+        } else {
+          setError('Failed to load psychologists. Please try again later.');
+        }
       } finally {
         setLoading(false);
       }
