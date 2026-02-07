@@ -10,11 +10,35 @@ export default function Login() {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<'student' | 'psychologist'>('student');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [resetSent, setResetSent] = useState(false);
+
+  const getErrorMessage = (errorCode: string): string => {
+    switch (errorCode) {
+      case 'auth/invalid-email':
+        return 'Please enter a valid email address.';
+      case 'auth/user-disabled':
+        return 'This account has been disabled. Please contact support.';
+      case 'auth/user-not-found':
+        return 'No account found with this email. Please check your email or create an account.';
+      case 'auth/wrong-password':
+        return 'Incorrect password. Please try again or reset your password.';
+      case 'auth/invalid-credential':
+        return 'Invalid email or password. Please check your credentials and try again.';
+      case 'auth/too-many-requests':
+        return 'Too many failed attempts. Please wait a few minutes before trying again.';
+      case 'auth/network-request-failed':
+        return 'Network error. Please check your internet connection.';
+      case 'auth/popup-closed-by-user':
+        return 'Sign-in was cancelled. Please try again.';
+      case 'auth/account-exists-with-different-credential':
+        return 'An account already exists with this email using a different sign-in method.';
+      default:
+        return 'An error occurred. Please try again.';
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,14 +47,11 @@ export default function Login() {
 
     try {
       await signIn(email, password);
-      // We let the auth state listener update the profile, then Redirect/PublicRoute handles it,
-      // or we can just navigate to a default and let the router fix it.
-      // Ideally, we wait for profile to load, but signIn logic doesn't return profile.
-      // We'll navigate to student dashboard as default, or root.
-      navigate('/student/dashboard'); // Temporary default, PublicRoute will correct this if they revisit login
+      // Navigation handled by auth state listener and PublicRoute
+      navigate('/student/dashboard');
     } catch (err: unknown) {
-      const error = err as Error;
-      setError(error.message || 'Failed to sign in');
+      const firebaseError = err as { code?: string; message?: string };
+      setError(getErrorMessage(firebaseError.code || ''));
     } finally {
       setLoading(false);
     }
@@ -40,17 +61,11 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      await signInWithGoogle(role);
-      // Navigation is now handled by the PublicRoute/AuthContext state change, 
-      // but explicitly navigating helps specific flows.
-      if (role === 'psychologist') {
-        navigate('/psychologist/dashboard');
-      } else {
-        navigate('/student/dashboard');
-      }
+      await signInWithGoogle('student'); // Default to student, role determined by existing profile
+      navigate('/student/dashboard');
     } catch (err: unknown) {
-      const error = err as Error;
-      setError(error.message || 'Failed to sign in with Google');
+      const firebaseError = err as { code?: string; message?: string };
+      setError(getErrorMessage(firebaseError.code || ''));
     } finally {
       setLoading(false);
     }
@@ -67,8 +82,12 @@ export default function Login() {
       await resetPassword(email);
       setResetSent(true);
     } catch (err: unknown) {
-      const error = err as Error;
-      setError(error.message || 'Failed to send reset email');
+      const firebaseError = err as { code?: string; message?: string };
+      if (firebaseError.code === 'auth/user-not-found') {
+        setError('No account found with this email address.');
+      } else {
+        setError(getErrorMessage(firebaseError.code || ''));
+      }
     } finally {
       setLoading(false);
     }
@@ -173,29 +192,6 @@ export default function Login() {
                 <div className="relative flex justify-center text-sm">
                   <span className="px-2 bg-white text-text-muted">Or continue with</span>
                 </div>
-              </div>
-
-              <div className="flex justify-center gap-4 mb-4">
-                 <label className="flex items-center gap-2 cursor-pointer">
-                   <input 
-                     type="radio" 
-                     name="role" 
-                     checked={role === 'student'} 
-                     onChange={() => setRole('student')}
-                     className="accent-primary"
-                   />
-                   <span className="text-sm text-text-muted">I'm a Student</span>
-                 </label>
-                 <label className="flex items-center gap-2 cursor-pointer">
-                   <input 
-                     type="radio" 
-                     name="role" 
-                     checked={role === 'psychologist'} 
-                     onChange={() => setRole('psychologist')}
-                     className="accent-primary"
-                   />
-                   <span className="text-sm text-text-muted">I'm a Psychologist</span>
-                 </label>
               </div>
 
               <button

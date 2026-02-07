@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock, Send, MessageCircle, CheckCircle } from 'lucide-react';
+
+// El Taref University coordinates - outside component to avoid useEffect dependencies
+const UNIVERSITY_LOCATION = { lat: 36.7667, lng: 8.3167 };
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -9,10 +12,64 @@ export default function Contact() {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [mapLoaded, setMapLoaded] = useState(false);
+
+  useEffect(() => {
+    // Dynamically load Leaflet CSS
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(link);
+    
+    // Load Leaflet JS
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.onload = () => setMapLoaded(true);
+    document.body.appendChild(script);
+
+    return () => {
+      document.head.removeChild(link);
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (mapLoaded && (window as unknown as { L: typeof import('leaflet') }).L) {
+      const L = (window as unknown as { L: typeof import('leaflet') }).L;
+      
+      // Check if map already exists
+      const container = document.getElementById('contact-map');
+      if (container && !(container as unknown as { _leaflet_id?: number })._leaflet_id) {
+        const map = L.map('contact-map').setView([UNIVERSITY_LOCATION.lat, UNIVERSITY_LOCATION.lng], 15);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Custom marker icon
+        const customIcon = L.divIcon({
+          html: `<div style="background: linear-gradient(135deg, #4F46E5, #7C3AED); width: 40px; height: 40px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);"></div>`,
+          iconSize: [40, 40],
+          iconAnchor: [20, 40],
+          className: ''
+        });
+
+        L.marker([UNIVERSITY_LOCATION.lat, UNIVERSITY_LOCATION.lng], { icon: customIcon })
+          .addTo(map)
+          .bindPopup(`
+            <div style="text-align: center; padding: 8px;">
+              <strong style="font-size: 14px;">MindWell Counseling Center</strong><br/>
+              <span style="color: #666; font-size: 12px;">El Taref University Campus</span><br/>
+              <span style="color: #666; font-size: 12px;">Building C, Ground Floor</span>
+            </div>
+          `)
+          .openPopup();
+      }
+    }
+  }, [mapLoaded]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would send to a backend
     console.log('Form submitted:', formData);
     setSubmitted(true);
     setTimeout(() => {
@@ -181,11 +238,25 @@ export default function Contact() {
                 ))}
               </div>
 
-              {/* Map Placeholder */}
-              <div className="mt-8 bg-gray-200 rounded-2xl h-64 flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                  <p className="text-text-muted">Interactive map coming soon</p>
+              {/* Interactive Map */}
+              <div className="mt-8">
+                <h3 className="text-lg font-bold text-text-heading mb-4 flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-primary" />
+                  Find Us on the Map
+                </h3>
+                <div 
+                  id="contact-map" 
+                  className="w-full h-64 rounded-2xl overflow-hidden shadow-lg border border-gray-200"
+                  style={{ background: '#e5e7eb' }}
+                >
+                  {!mapLoaded && (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                        <p className="text-text-muted text-sm">Loading map...</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -195,3 +266,4 @@ export default function Contact() {
     </div>
   );
 }
+
