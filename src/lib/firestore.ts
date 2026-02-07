@@ -32,6 +32,9 @@ export interface Psychologist {
   rating?: number;
   reviewCount?: number;
   title: string; // e.g. "Clinical Psychologist"
+  location?: string;
+  sessionPrice?: number;
+  languages?: string[];
 }
 
 export interface Resource {
@@ -1119,4 +1122,9 @@ export async function joinChallenge(challengeId: string, userId: string): Promis
       });
     }
   }
+}
+
+export async function updatePsychologistProfile(uid: string, data: Partial<Psychologist>): Promise<void> {
+  const docRef = doc(db, 'users', uid);
+  await updateDoc(docRef, data);
 }

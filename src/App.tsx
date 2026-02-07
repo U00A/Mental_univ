@@ -54,6 +54,8 @@ import PsychologistPatients from '@/pages/psychologist/Patients';
 import PsychologistMessages from '@/pages/psychologist/Messages';
 import PsychologistEducation from '@/pages/psychologist/Education';
 import PsychologistEarnings from '@/pages/psychologist/Earnings';
+import PsychologistSettings from '@/pages/psychologist/Settings';
+import PsychologistProfilePreview from '@/pages/psychologist/Profile';
 
 // Shared Components
 function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, allowedRole?: string }) {
@@ -165,8 +167,8 @@ export default function App() {
                <Route path="messages" element={<PsychologistMessages />} />
                <Route path="education" element={<PsychologistEducation />} />
                <Route path="earnings" element={<PsychologistEarnings />} />
-               <Route path="settings" element={<PlaceholderPage title="Settings" />} />
-               <Route path="profile" element={<PlaceholderPage title="Public Profile" />} />
+               <Route path="settings" element={<PsychologistSettings />} />
+               <Route path="profile" element={<PsychologistProfilePreview />} />
             </Route>
 
             {/* Admin Portal */}
