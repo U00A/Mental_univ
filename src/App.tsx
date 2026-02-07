@@ -10,6 +10,10 @@ import PublicLayout from '@/layouts/PublicLayout';
 
 // Public Pages
 import Home from '@/pages/public/Home';
+import About from '@/pages/public/About';
+import Services from '@/pages/public/Services';
+import PublicResources from '@/pages/public/Resources';
+import Contact from '@/pages/public/Contact';
 import Login from '@/pages/auth/Login';
 import Register from '@/pages/auth/Register';
 import PlaceholderPage from '@/components/common/PlaceholderPage';
@@ -99,11 +103,11 @@ export default function App() {
             {/* Public Routes */}
             <Route element={<PublicLayout />}>
               <Route path="/" element={<Home />} />
-              <Route path="/about" element={<PlaceholderPage title="About Us" />} />
-              <Route path="/services" element={<PlaceholderPage title="Our Services" />} />
-              <Route path="/resources" element={<PlaceholderPage title="Public Resources" />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/resources" element={<PublicResources />} />
               <Route path="/faq" element={<PlaceholderPage title="FAQ" />} />
-              <Route path="/contact" element={<PlaceholderPage title="Contact Us" />} />
+              <Route path="/contact" element={<Contact />} />
             </Route>
             
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
