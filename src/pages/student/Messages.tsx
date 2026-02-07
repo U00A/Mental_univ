@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Send, Search, Phone, Video, MoreVertical, Mic, Smile, X, ChevronLeft, Loader2, Image, File, Paperclip } from 'lucide-react';
+import { Send, Search, Phone, Video, MoreVertical, Mic, Smile, X, ChevronLeft, Loader2, Image, File, Paperclip, Pin } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import CrisisInterventionModal from '@/components/tools/CrisisInterventionModal';
 import PanicHelper from '@/components/tools/PanicHelper';
@@ -21,6 +21,9 @@ import {
   subscribeToUserPresence,
   getUnreadMessageCount,
   searchMessages,
+  pinMessage,
+  unpinMessage,
+  getPinnedMessages,
   type Message,
   type ReactionType,
   type UserPresence
@@ -36,6 +39,8 @@ import EmojiPicker from '@/components/chat/EmojiPicker';
 import OnlineStatus from '@/components/chat/OnlineStatus';
 import ImageMessage from '@/components/chat/ImageMessage';
 import FileMessage from '@/components/chat/FileMessage';
+import HeartAnimation from '@/components/chat/HeartAnimation';
+import LinkPreview from '@/components/chat/LinkPreview';
 
 const stickerPack = [
   'https://cdn-icons-png.flaticon.com/512/742/742751.png', // Happy
@@ -103,6 +108,16 @@ export default function Messages() {
   // File input refs
   const imageInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Pinned Messages State
+  const [pinnedMessages, setPinnedMessages] = useState<Message[]>([]);
+  const [showPinnedMessages, setShowPinnedMessages] = useState(false);
+
+  // Heart Animation State (for double-tap like)
+  const [heartMessageId, setHeartMessageId] = useState<string | null>(null);
+
+  // URL Regex for link detection
+  const URL_PATTERN = /(https?:\/\/[^\s]+)/g;
 
   // Fetch Conversations
   useEffect(() => {
@@ -412,10 +427,51 @@ export default function Messages() {
       const results = await searchMessages(conversationId, chatSearchQuery);
       setSearchResults(results);
     } catch (err) {
-      console.error('Error searching messages:', err);
+      console.error('Error searching:', err);
     } finally {
       setIsSearching(false);
     }
+  };
+
+  // Pin Message Handler
+  const handlePinMessage = useCallback(async (messageId: string) => {
+    if (!conversationId) return;
+    const msg = messages.find(m => m.id === messageId);
+    if (!msg) return;
+
+    if (msg.pinned) {
+      await unpinMessage(messageId);
+      setPinnedMessages(prev => prev.filter(m => m.id !== messageId));
+    } else {
+      await pinMessage(messageId);
+      setPinnedMessages(prev => [...prev, msg]);
+    }
+  }, [conversationId, messages]);
+
+  // Fetch Pinned Messages on conversation change
+  useEffect(() => {
+    async function fetchPinned() {
+      if (!conversationId) return;
+      try {
+        const pinned = await getPinnedMessages(conversationId);
+        setPinnedMessages(pinned);
+      } catch (err) {
+        console.error('Error fetching pinned:', err);
+      }
+    }
+    fetchPinned();
+  }, [conversationId]);
+
+  // Double Tap Like Handler
+  const handleDoubleTapLike = useCallback(async (messageId: string) => {
+    if (!user) return;
+    setHeartMessageId(messageId);
+    await addReaction(messageId, user.uid, 'love');
+  }, [user]);
+
+  // Extract URLs from message content
+  const extractUrls = (text: string): string[] => {
+    return text.match(URL_PATTERN) || [];
   };
 
   return (
@@ -525,6 +581,16 @@ export default function Messages() {
               </div>
               
               <div className="flex items-center gap-1 shrink-0">
+                {/* Pinned Messages Toggle */}
+                {pinnedMessages.length > 0 && (
+                  <button 
+                    onClick={() => setShowPinnedMessages(!showPinnedMessages)}
+                    className={`p-2.5 rounded-xl transition-colors ${showPinnedMessages ? 'bg-amber-100 text-amber-600' : 'hover:bg-gray-100 text-text-muted'}`}
+                    title={`${pinnedMessages.length} pinned messages`}
+                  >
+                    <Pin className="w-5 h-5" />
+                  </button>
+                )}
                 <button className="p-2.5 rounded-xl hover:bg-gray-100 text-text-muted transition-colors">
                   <Phone className="w-5 h-5" />
                 </button>
@@ -536,6 +602,37 @@ export default function Messages() {
                 </button>
               </div>
             </div>
+
+            {/* Pinned Messages Panel */}
+            {showPinnedMessages && pinnedMessages.length > 0 && (
+              <div className="bg-amber-50 border-b border-amber-200 p-3 max-h-40 overflow-y-auto">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-bold text-amber-700 flex items-center gap-1">
+                    <Pin className="w-4 h-4" />
+                    Pinned Messages ({pinnedMessages.length})
+                  </span>
+                  <button 
+                    onClick={() => setShowPinnedMessages(false)}
+                    className="text-sm text-amber-600 hover:underline"
+                  >
+                    Hide
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {pinnedMessages.map((msg) => (
+                    <div 
+                      key={msg.id} 
+                      className="bg-white rounded-lg p-2 text-sm border border-amber-100 cursor-pointer hover:bg-amber-50"
+                    >
+                      <p className="truncate text-text">{msg.content}</p>
+                      <span className="text-xs text-text-muted">
+                        {msg.timestamp?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Search Results */}
             {searchResults.length > 0 && (
@@ -575,6 +672,7 @@ export default function Messages() {
                     className={`flex ${isMe ? 'justify-end' : 'justify-start'} items-end gap-2 group ${
                       isHighlighted ? 'bg-yellow-100 -mx-4 px-4 py-2 rounded-lg' : ''
                     }`}
+                    onDoubleClick={() => msg.id && handleDoubleTapLike(msg.id)}
                   >
                     {!isMe && (
                       <div className="w-8 h-8 rounded-full bg-primary shrink-0 flex items-center justify-center text-white text-xs font-bold invisible md:visible">
@@ -582,7 +680,23 @@ export default function Messages() {
                       </div>
                     )}
                     
-                    <div className="flex flex-col max-w-[75%]">
+                    <div className="flex flex-col max-w-[75%] relative">
+                      {/* Heart Animation on Double Tap */}
+                      {heartMessageId === msg.id && (
+                        <HeartAnimation 
+                          show={true} 
+                          onComplete={() => setHeartMessageId(null)} 
+                        />
+                      )}
+
+                      {/* Pinned Indicator */}
+                      {msg.pinned && (
+                        <div className="flex items-center gap-1 mb-1 text-xs text-amber-600">
+                          <Pin className="w-3 h-3" />
+                          <span>Pinned</span>
+                        </div>
+                      )}
+
                       {/* Reply Preview */}
                       {msg.replyTo && (
                         <div className={`mb-1 px-3 py-1.5 rounded-lg text-xs ${
@@ -598,8 +712,17 @@ export default function Messages() {
                           ? 'bg-primary text-white rounded-br-none' 
                           : 'bg-white text-text border border-border rounded-bl-none'
                       }`}>
-                        {/* Message Menu */}
-                        <div className={`absolute top-0 ${isMe ? 'left-0 -translate-x-full' : 'right-0 translate-x-full'} px-2`}>
+                        {/* Message Menu with Pin Option */}
+                        <div className={`absolute top-0 ${isMe ? 'left-0 -translate-x-full' : 'right-0 translate-x-full'} px-2 flex gap-1`}>
+                          <button
+                            onClick={() => msg.id && handlePinMessage(msg.id)}
+                            className={`p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all ${
+                              msg.pinned ? 'text-amber-500 bg-amber-50' : 'text-text-muted hover:bg-gray-100'
+                            }`}
+                            title={msg.pinned ? 'Unpin' : 'Pin'}
+                          >
+                            <Pin className="w-3.5 h-3.5" />
+                          </button>
                           <MessageMenu
                             isMe={isMe}
                             onEdit={() => {
@@ -614,7 +737,18 @@ export default function Messages() {
                         </div>
                         
                         {/* Message Content */}
-                        {msg.type === 'text' && <p className="leading-relaxed">{msg.content}</p>}
+                        {msg.type === 'text' && (
+                          <>
+                            <p className="leading-relaxed">{msg.content}</p>
+                            {/* Link Preview */}
+                            {extractUrls(msg.content).length > 0 && (
+                              <LinkPreview 
+                                url={extractUrls(msg.content)[0]} 
+                                isMe={isMe}
+                              />
+                            )}
+                          </>
+                        )}
                         
                         {msg.type === 'sticker' && (
                           <img src={msg.stickerUrl} alt="Sticker" className="w-32 h-32 object-contain py-2" />

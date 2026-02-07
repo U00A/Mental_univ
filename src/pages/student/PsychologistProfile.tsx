@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Star, Clock, Calendar, MapPin, Award, Loader2, Globe, DollarSign } from 'lucide-react';
-import { getPsychologistById, type Psychologist } from '@/lib/firestore';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Star, Clock, Calendar, MapPin, Award, Loader2, Globe, DollarSign, MessageSquare } from 'lucide-react';
+import { getPsychologistById, getConversationId, type Psychologist } from '@/lib/firestore';
+import { useAuth } from '@/contexts/AuthContext';
 
 const timeSlots = ['09:00', '09:30', '10:00', '10:30', '11:00', '14:00', '14:30', '15:00', '15:30', '16:00'];
 
 export default function PsychologistProfile() {
   const { id } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [psychologist, setPsychologist] = useState<Psychologist | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -216,9 +219,6 @@ export default function PsychologistProfile() {
                 onClick={(e) => {
                     if (!selectedDate || !selectedTime) {
                         e.preventDefault();
-                        // Ideally pass state via history state or URL params, but for now just link to booking wizard
-                         /* The Booking page has its own wizard that re-asks for date/time, 
-                            so simple link is fine for now, or we implement query params passing. */
                     }
                 }}
                 className={`btn btn-primary w-full flex items-center justify-center gap-2 ${(!selectedDate || !selectedTime) ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
@@ -226,6 +226,20 @@ export default function PsychologistProfile() {
                 <Calendar className="w-4 h-4" />
                 Book Appointment
               </Link>
+              
+              {/* Direct Message Button */}
+              <button
+                onClick={() => {
+                  if (user && psychologist) {
+                    const conversationId = getConversationId(user.uid, psychologist.uid);
+                    navigate(`/student/messages/${conversationId}`);
+                  }
+                }}
+                className="btn btn-secondary w-full flex items-center justify-center gap-2 mt-3"
+              >
+                <MessageSquare className="w-4 h-4" />
+                Send Message
+              </button>
               
                <div className="mt-4 flex items-center justify-center gap-1 text-sm font-bold text-text">
                   <DollarSign className="w-4 h-4 text-primary" />

@@ -107,6 +107,8 @@ export interface Message {
     type: Message['type'];
   };
   reactions?: MessageReaction[];
+  pinned?: boolean;
+  pinnedAt?: Date;
 }
 
 export interface MoodEntry {
@@ -470,9 +472,53 @@ export async function removeReaction(messageId: string, userId: string): Promise
   if (docSnap.exists()) {
     const data = docSnap.data();
     const reactions = data.reactions || [];
-    const filteredReactions = reactions.filter((r: any) => r.userId !== userId);
+    const filteredReactions = reactions.filter((r: { userId: string }) => r.userId !== userId);
     await updateDoc(docRef, { reactions: filteredReactions });
   }
+}
+
+// ============ PIN MESSAGES ============
+
+export async function pinMessage(messageId: string): Promise<void> {
+  const docRef = doc(db, 'messages', messageId);
+  await updateDoc(docRef, { pinned: true, pinnedAt: Timestamp.now() });
+}
+
+export async function unpinMessage(messageId: string): Promise<void> {
+  const docRef = doc(db, 'messages', messageId);
+  await updateDoc(docRef, { pinned: false, pinnedAt: null });
+}
+
+export async function getPinnedMessages(conversationId: string): Promise<Message[]> {
+  const q = query(
+    collection(db, 'messages'),
+    where('conversationId', '==', conversationId),
+    where('pinned', '==', true),
+    orderBy('pinnedAt', 'desc')
+  );
+  
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(docSnapshot => {
+    const data = docSnapshot.data();
+    return {
+      id: docSnapshot.id,
+      conversationId: data.conversationId,
+      senderId: data.senderId,
+      receiverId: data.receiverId,
+      content: data.content,
+      type: data.type,
+      status: data.status,
+      read: data.read ?? false,
+      timestamp: data.timestamp?.toDate(),
+      pinnedAt: data.pinnedAt?.toDate(),
+      pinned: data.pinned,
+      deleted: data.deleted,
+      edited: data.edited,
+      reactions: data.reactions,
+      replyTo: data.replyTo,
+      participants: data.participants
+    } as Message;
+  });
 }
 
 export function subscribeToTypingStatus(
