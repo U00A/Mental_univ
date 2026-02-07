@@ -3,9 +3,7 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { ToastProvider } from '@/components/ui/Toast';
 
 // Layouts
-import StudentLayout from '@/layouts/StudentLayout';
-import PsychologistLayout from '@/layouts/PsychologistLayout';
-import AdminLayout from '@/layouts/AdminLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 import PublicLayout from '@/layouts/PublicLayout';
 
 // Public Pages
@@ -102,7 +100,7 @@ export default function App() {
             <Route path="/student/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
 
             {/* Student Portal */}
-            <Route path="/student" element={<ProtectedRoute><StudentLayout /></ProtectedRoute>}>
+            <Route path="/student" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
               <Route index element={<Navigate to="/student/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
               
@@ -148,7 +146,7 @@ export default function App() {
             </Route>
 
             {/* Psychologist Portal */}
-            <Route path="/psychologist" element={<ProtectedRoute allowedRole="psychologist"><PsychologistLayout /></ProtectedRoute>}>
+            <Route path="/psychologist" element={<ProtectedRoute allowedRole="psychologist"><DashboardLayout /></ProtectedRoute>}>
                <Route index element={<Navigate to="/psychologist/dashboard" replace />} />
                <Route path="dashboard" element={<PsychologistDashboard />} />
                <Route path="patients" element={<PlaceholderPage title="My Patients" />} />
@@ -161,7 +159,7 @@ export default function App() {
             </Route>
 
             {/* Admin Portal */}
-            <Route path="/admin" element={<ProtectedRoute allowedRole="admin"><AdminLayout /></ProtectedRoute>}>
+            <Route path="/admin" element={<ProtectedRoute allowedRole="admin"><DashboardLayout /></ProtectedRoute>}>
               <Route index element={<Navigate to="/admin/dashboard" replace />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="users" element={<PlaceholderPage title="User Management" />} />
