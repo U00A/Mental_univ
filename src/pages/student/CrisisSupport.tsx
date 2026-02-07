@@ -97,7 +97,7 @@ export default function CrisisSupport() {
             </div>
 
             {/* Local Resources Placeholder */}
-            <div className="card bg-gradient-to-br from-indigo-50 to-white border-none">
+            <div className="bg-linear-to-br from-red-500 to-red-600 rounded-2xl p-8 mb-8 text-white shadow-xl relative overflow-hidden animate-pulse-slow">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center shrink-0">
                   <MapPin className="w-5 h-5 text-indigo-600" />

@@ -43,6 +43,7 @@ export interface Resource {
   thumbnailUrl?: string;
   contentUrl?: string; // link to pdf or video
   createdAt: Date;
+  color?: string;
 }
 
 export interface Appointment {
@@ -50,8 +51,7 @@ export interface Appointment {
   studentId: string;
   psychologistId: string;
   studentName: string;
-  psychologistName: string;
-  date: Date;
+  psychologistName: string;  date: Date;
   time: string;
   duration: number; // minutes
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled';

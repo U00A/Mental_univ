@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Search, BookOpen, Video, FileText, Headphones, Clock, Sparkles } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
 import { useAuth } from '@/contexts/AuthContext';
 import { getResources, getMatchingPreferences, type Resource } from '@/lib/firestore';
 
@@ -70,10 +68,9 @@ export default function Resources() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <div className="w-full animate-fade-in">
       
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      <main className="w-full">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-text mb-2">Resource Library</h1>
           <p className="text-text-muted">Articles, videos, and guides for your wellness journey</p>
@@ -92,7 +89,7 @@ export default function Resources() {
                 return (
                   <div 
                     key={resource.id} 
-                    className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-[28px] p-5 border border-primary/20 hover:border-primary/40 transition-all group cursor-pointer"
+                    className="bg-linear-to-br from-primary/5 to-primary/10 rounded-[28px] p-5 border border-primary/20 hover:border-primary/40 transition-all group cursor-pointer"
                   >
                     <div className="flex items-center gap-4 mb-3">
                       <div className="w-12 h-12 rounded-xl bg-white shadow-md flex items-center justify-center">
@@ -175,7 +172,7 @@ export default function Resources() {
                 const Icon = getIcon(resource.type);
                 return (
                   <div key={resource.id} className="card card-glass card-hover cursor-pointer border-none group overflow-hidden relative">
-                    <div className="h-40 rounded-[28px] bg-gradient-to-br from-primary/10 via-success/30 to-primary/20 flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-700 relative overflow-hidden">
+                    <div className={`h-32 bg-linear-to-br ${resource.color} p-6 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform duration-500`}>
                       <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                       <div className="w-16 h-16 rounded-3xl bg-white shadow-xl flex items-center justify-center group-hover:rotate-6 transition-transform">
                         <Icon className="w-8 h-8 text-primary" />
@@ -215,8 +212,6 @@ export default function Resources() {
           </div>
         )}
       </main>
-
-      <Footer />
     </div>
   );
 }

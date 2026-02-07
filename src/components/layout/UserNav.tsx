@@ -50,17 +50,12 @@ export default function UserNav() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-3 p-1.5 rounded-full hover:bg-gray-100 transition-colors border border-transparent hover:border-gray-200"
       >
-        <div className="flex flex-col items-end hidden sm:block mr-1">
-          <span className="text-sm font-semibold text-text leading-none">
-            {profile.displayName || 'User'}
-          </span>
-          <span className="text-xs text-text-muted capitalize">
-            {profile.role}
-          </span>
-        </div>
         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold border border-primary/20">
           {getInitials()}
         </div>
+        <span className="text-sm font-semibold text-text hidden sm:block">
+          {profile.displayName || 'User'}
+        </span>
         <ChevronDown className={`w-4 h-4 text-text-muted transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 

@@ -99,8 +99,8 @@ export default function Header() {
                 <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-medium">
                   {profile?.displayName?.charAt(0) || <User className="w-4 h-4" />}
                 </div>
-                <span className="hidden lg:block text-sm font-medium text-text">
-                  {profile?.displayName?.split(' ')[0]}
+                <span className="text-sm font-medium text-text">
+                  {profile?.displayName || 'User'}
                 </span>
               </div>
 
@@ -139,10 +139,7 @@ export default function Header() {
                 <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-medium">
                   {profile?.displayName?.charAt(0) || 'U'}
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-text">{profile?.displayName || 'User'}</p>
-                  <p className="text-xs text-text-muted">{profile?.email}</p>
-                </div>
+                <p className="text-sm font-medium text-text">{profile?.displayName || 'User'}</p>
               </div>
               <button 
                 onClick={handleSignOut}

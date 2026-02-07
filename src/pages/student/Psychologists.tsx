@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Star, Clock, Users, Sparkles, Heart } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
 import MatchingQuizModal from '@/components/matching/MatchingQuizModal';
 import FavoriteButton from '@/components/common/FavoriteButton';
 import { useAuth } from '@/contexts/AuthContext';
@@ -83,10 +81,9 @@ export default function Psychologists() {
   const displayedPsychologists = getDisplayedPsychologists();
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <div className="w-full animate-fade-in">
       
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      <main className="w-full">
         {/* Hero Section */}
         <div className="bg-primary/5 rounded-2xl p-8 mb-8 flex flex-col md:flex-row items-center gap-8">
           <div className="flex-1">
@@ -203,7 +200,7 @@ export default function Psychologists() {
                           className="w-16 h-16 rounded-2xl object-cover shadow-md group-hover:scale-110 transition-transform duration-500"
                         />
                       ) : (
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center text-white text-xl font-bold shadow-lg">
+                        <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-primary to-primary-light flex items-center justify-center text-white text-xl font-bold shadow-lg">
                           {psych.displayName.split(' ').map(n => n[0]).join('')}
                         </div>
                       )}
@@ -282,8 +279,6 @@ export default function Psychologists() {
         onClose={() => setIsQuizOpen(false)}
         onComplete={handleQuizComplete}
       />
-
-      <Footer />
     </div>
   );
 }

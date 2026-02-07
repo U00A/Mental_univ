@@ -19,15 +19,15 @@ import { getAppointments, type Appointment } from '@/lib/firestore';
 export default function StudentDashboard() {
   const { profile, user } = useAuth();
   const navigate = useNavigate();
-  const [greeting, setGreeting] = useState('');
+  const [greeting] = useState(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  });
   const [nextAppointment, setNextAppointment] = useState<Appointment | null>(null);
 
   useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) setGreeting('Good morning');
-    else if (hour < 18) setGreeting('Good afternoon');
-    else setGreeting('Good evening');
-
     async function fetchNextAppointment() {
       if (user) {
         try {
@@ -174,7 +174,7 @@ export default function StudentDashboard() {
         </div>
 
         {/* Daily Insight / Quick Action */}
-        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-100 shadow-sm flex flex-col justify-between">
+        <div className="bg-linear-to-br from-primary to-primary-dark rounded-2xl p-6 text-white shadow-lg overflow-hidden relative">
            <div className="flex items-start justify-between mb-4">
             <div className="p-3 bg-white text-amber-500 rounded-xl shadow-sm">
               <Sparkles className="w-6 h-6" />
@@ -206,7 +206,7 @@ export default function StudentDashboard() {
             to={feature.href}
             className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-primary/20 transition-all group flex flex-col"
           >
-            <div className={`w-12 h-12 rounded-xl ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+            <div className={`p-3 rounded-xl bg-linear-to-br ${feature.color} w-fit mb-4 group-hover:scale-110 transition-transform duration-300`}>
               <feature.icon className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>

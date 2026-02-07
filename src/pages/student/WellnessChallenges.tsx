@@ -9,8 +9,6 @@ import {
   Calendar,
   Award
 } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
 
 export default function WellnessChallenges() {
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
@@ -66,10 +64,9 @@ export default function WellnessChallenges() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
-      <Header />
+    <div className="w-full relative overflow-hidden animate-fade-in">
       
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      <main className="w-full">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-text mb-2">Wellness Challenges</h1>
@@ -176,7 +173,7 @@ export default function WellnessChallenges() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <div className="card bg-gradient-to-br from-primary to-primary-dark text-white text-center py-8">
+            <div className="card bg-linear-to-br from-primary to-primary-dark text-white text-center py-8">
               <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
                 <Award className="w-10 h-10 text-white" />
               </div>
@@ -201,8 +198,6 @@ export default function WellnessChallenges() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

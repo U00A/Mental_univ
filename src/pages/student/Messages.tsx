@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Send, Search, Phone, Video, MoreVertical, Mic, Smile, X, ChevronLeft, Loader2, Image, File, Paperclip } from 'lucide-react';
-import Header from '@/components/layout/Header';
 import { useAuth } from '@/contexts/AuthContext';
 import CrisisInterventionModal from '@/components/tools/CrisisInterventionModal';
 import PanicHelper from '@/components/tools/PanicHelper';
@@ -420,8 +419,7 @@ export default function Messages() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-background overflow-hidden relative">
-      <Header />
+    <div className="h-[calc(100vh-4rem)] flex flex-col bg-background overflow-hidden relative">
       
       <div className="flex-1 flex overflow-hidden max-w-7xl mx-auto px-0 sm:px-6 lg:px-8 w-full">
         {/* Conversations List */}

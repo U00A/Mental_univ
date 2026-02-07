@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Users, MessageSquare, Loader2, Sparkles } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
 import CommunityCard from '@/components/community/CommunityCard';
 import { getCommunities, seedCommunities, type Community } from '@/lib/firestore';
 
@@ -38,12 +36,11 @@ export default function Communities() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <div className="w-full animate-fade-in">
       
-      <main className="flex-1">
+      <main className="w-full">
         {/* Hero Section */}
-        <section className="relative pt-24 pb-16 overflow-hidden">
+        <section className="relative pt-12 pb-12 overflow-hidden rounded-3xl bg-primary/5 mb-8">
             <div className="absolute inset-0 bg-primary/5 -skew-y-6 origin-top-right scale-110" />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -146,8 +143,6 @@ export default function Communities() {
             </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 }
