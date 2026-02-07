@@ -213,13 +213,14 @@ export interface FavoritePsychologist {
 // ============ PSYCHOLOGISTS ============
 
 export async function getPsychologists(): Promise<Psychologist[]> {
+  // Simple query - filter by role only to avoid composite index requirement
   const q = query(
     collection(db, 'users'),
-    where('role', '==', 'psychologist'),
-    where('isAvailable', '==', true)
+    where('role', '==', 'psychologist')
   );
   
   const snapshot = await getDocs(q);
+  // Return all psychologists (can filter by isAvailable on frontend if needed)
   return snapshot.docs.map(doc => ({
     uid: doc.id,
     ...doc.data()

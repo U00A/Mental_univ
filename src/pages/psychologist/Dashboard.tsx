@@ -44,11 +44,11 @@ export default function PsychologistDashboard() {
     upcomingSessions: 0,
     completedSessions: 0,
     earnings: 0,
-    rating: 4.9
+    rating: 0
   });
   const [upcomingAppointments, setUpcomingAppointments] = useState<Appointment[]>([]);
 
-  // Mock data for the chart
+  // Activity data for the chart - calculated from appointments
   const [activityData, setActivityData] = useState<{ name: string; sessions: number }[]>([]);
 
   const fetchDashboardData = useCallback(async () => {
