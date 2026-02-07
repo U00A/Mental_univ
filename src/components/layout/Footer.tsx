@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Brain, Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Heart } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Heart } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -11,11 +11,11 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                <Brain className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 rounded-xl overflow-hidden">
+                <img src="/images/mindspace_logo_1770492717933.svg" alt="Rahatek" className="w-full h-full" />
               </div>
               <div>
-                <span className="block text-xl font-bold text-text-heading font-display">MindWell</span>
+                <span className="block text-xl font-bold font-display" style={{ color: '#2D6A4F' }}>Rahatek</span>
                 <span className="text-xs text-text-muted font-medium">EL TAREF UNIVERSITY</span>
               </div>
             </div>

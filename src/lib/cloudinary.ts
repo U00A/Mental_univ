@@ -27,7 +27,7 @@ export function getAvatarUrl(publicId: string | undefined, size = 200) {
 }
 
 // Cloudinary upload widget configuration
-export const uploadPreset = 'mindwell_uploads'; // You'll need to create this in Cloudinary dashboard
+export const uploadPreset = 'rahatek_uploads'; // You'll need to create this in Cloudinary dashboard
 
 // Upload image using unsigned upload (for client-side)
 export async function uploadImage(file: File): Promise<string> {

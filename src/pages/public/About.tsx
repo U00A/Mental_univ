@@ -40,10 +40,10 @@ export default function About() {
             <span>El Taref University Mental Health</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-text-heading font-display mb-6">
-            About MindWell
+            About Rahatek
           </h1>
           <p className="text-xl text-text-muted max-w-3xl mx-auto leading-relaxed">
-            MindWell is El Taref University's dedicated mental health platform, 
+            Rahatek is El Taref University's dedicated mental health platform, 
             providing students with accessible, confidential, and professional psychological support.
           </p>
         </div>
@@ -68,7 +68,7 @@ export default function About() {
               </p>
               <p className="text-text-muted leading-relaxed">
                 Whether you're dealing with academic stress, personal challenges, or simply want 
-                to improve your overall well-being, MindWell is here to support your journey.
+                to improve your overall well-being, Rahatek is here to support your journey.
               </p>
             </div>
             <div className="relative">
@@ -136,7 +136,7 @@ export default function About() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold font-display mb-6">Ready to Take the First Step?</h2>
           <p className="text-white/80 text-lg mb-8">
-            Join thousands of students who have already started their wellness journey with MindWell.
+            Join thousands of students who have already started their wellness journey with Rahatek.
           </p>
           <Link 
             to="/register" 

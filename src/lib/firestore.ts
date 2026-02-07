@@ -1,4 +1,4 @@
-// Firestore data services for the MindWell platform
+// Firestore data services for the Rahatek platform
 import { 
   collection, 
   doc, 

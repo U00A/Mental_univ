@@ -60,8 +60,8 @@ export default function StudentLayout() {
         <div className="h-full flex flex-col">
           {/* Logo */}
           <Link to="/" className="h-16 flex items-center gap-3 px-6 border-b border-border hover:bg-gray-50 transition-colors">
-            <img src="/images/logo.svg" alt="MindWell" className="h-8 w-8" />
-            <span className="text-xl font-bold text-text">MindWell</span>
+            <img src="/images/mindspace_logo_1770492717933.svg" alt="Rahatek" className="h-8 w-8" />
+            <span className="text-xl font-bold" style={{ color: '#2D6A4F' }}>Rahatek</span>
           </Link>
 
           {/* Navigation */}

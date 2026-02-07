@@ -53,8 +53,8 @@ export default function PsychologistLayout() {
         <div className="h-full flex flex-col">
           {/* Logo */}
           <Link to="/" className="h-16 flex items-center gap-3 px-6 border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
-            <img src="/images/logo.svg" alt="MindWell" className="h-8 w-8 brightness-0 invert" />
-            <span className="text-xl font-bold">MindWell Pro</span>
+            <img src="/images/mindspace_logo_1770492717933.svg" alt="Rahatek" className="h-8 w-8 brightness-0 invert" />
+            <span className="text-xl font-bold">Rahatek Pro</span>
           </Link>
 
           {/* Navigation */}

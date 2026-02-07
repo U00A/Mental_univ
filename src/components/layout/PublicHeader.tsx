@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Brain, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import UserNav from '@/components/layout/UserNav';
@@ -36,12 +36,12 @@ export default function PublicHeader() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-primary/30 transition-all duration-300">
-              <Brain className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-primary/20 group-hover:shadow-primary/30 transition-all duration-300">
+              <img src="/images/mindspace_logo_1770492717933.svg" alt="Rahatek" className="w-full h-full" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold text-text-heading font-display tracking-tight leading-none">
-                MindWell
+              <span className="text-xl font-bold font-display tracking-tight leading-none" style={{ color: '#2D6A4F' }}>
+                Rahatek
               </span>
               <span className="text-xs text-text-muted font-medium tracking-wide">
                 EL TAREF UNIVERSITY

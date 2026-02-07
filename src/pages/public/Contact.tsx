@@ -58,7 +58,7 @@ export default function Contact() {
           .addTo(map)
           .bindPopup(`
             <div style="text-align: center; padding: 8px;">
-              <strong style="font-size: 14px;">MindWell Counseling Center</strong><br/>
+              <strong style="font-size: 14px;">Rahatek Counseling Center</strong><br/>
               <span style="color: #666; font-size: 12px;">El Taref University Campus</span><br/>
               <span style="color: #666; font-size: 12px;">Building C, Ground Floor</span>
             </div>
@@ -92,7 +92,7 @@ export default function Contact() {
     {
       icon: Mail,
       title: 'Email Us',
-      details: ['mindwell@univ-eltaref.dz', 'support@mindwell.dz']
+      details: ['rahatek@univ-eltaref.dz', 'support@rahatek.dz']
     },
     {
       icon: Clock,
@@ -108,7 +108,7 @@ export default function Contact() {
     },
     {
       q: 'How do I book my first appointment?',
-      a: 'Simply create an account on MindWell, browse our psychologists, and book a time that works for you. Your first 5 sessions each semester are free.'
+      a: 'Simply create an account on Rahatek, browse our psychologists, and book a time that works for you. Your first 5 sessions each semester are free.'
     },
     {
       q: 'Can I switch psychologists?',

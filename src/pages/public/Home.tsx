@@ -19,7 +19,7 @@ export default function Home() {
   });
 
   useEffect(() => {
-    console.log("MindWell Platform v2 - Fetching Real Stats (No Defaults)");
+    console.log("Rahatek Platform v2 - Fetching Real Stats (No Defaults)");
     const fetchStats = async () => {
       try {
         const statsData = await getPlatformStats();
@@ -239,7 +239,7 @@ export default function Home() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-text-heading font-display mb-4">How MindWell Works</h2>
+            <h2 className="text-3xl font-bold text-text-heading font-display mb-4">How Rahatek Works</h2>
             <p className="text-text-muted text-lg">Get the help you need in three simple steps.</p>
           </div>
 
