@@ -359,13 +359,13 @@ export default function Applications() {
       </div>
 
       {selectedApp && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b flex items-center justify-between sticky top-0 bg-white">
-              <h2 className="text-xl font-bold">Application Details</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-gray-50/80 backdrop-blur-md z-10">
+              <h2 className="text-xl font-bold text-gray-900">Application Details</h2>
               <button 
                 onClick={() => setSelectedApp(null)}
-                className="p-2 hover:bg-gray-100 rounded-full"
+                className="p-2 hover:bg-gray-200/50 rounded-lg transition-colors text-gray-500"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -476,37 +476,50 @@ export default function Applications() {
 
       {/* Reject Modal */}
       {showRejectModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-red-100 rounded-lg">
-                <AlertCircle className="w-5 h-5 text-red-600" />
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 bg-red-100 rounded-xl">
+                <AlertCircle className="w-6 h-6 text-red-600" />
               </div>
-              <h2 className="text-lg font-bold">Reject Application</h2>
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">Reject Application</h2>
+                <p className="text-sm text-gray-500">This action cannot be undone</p>
+              </div>
             </div>
+            
             <p className="text-gray-600 mb-4">Please provide a reason for rejecting this application.</p>
+            
             <textarea
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
               placeholder="Enter rejection reason..."
-              className="w-full p-3 border border-gray-200 rounded-xl text-sm min-h-[100px] focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+              className="w-full p-4 border border-gray-200 rounded-xl text-sm min-h-[120px] focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none bg-gray-50 focus:bg-white transition-all"
             />
-            <div className="flex gap-3 mt-4">
+            
+            <div className="flex gap-3 mt-6">
               <button
                 onClick={() => {
                   setShowRejectModal(null);
                   setRejectionReason('');
                 }}
-                className="flex-1 px-4 py-2 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50"
+                className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 font-medium transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleReject(showRejectModal)}
                 disabled={processingId === showRejectModal}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 disabled:opacity-50"
+                className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 font-medium transition-colors disabled:opacity-50 shadow-lg shadow-red-600/20 flex items-center justify-center gap-2"
               >
-                {processingId === showRejectModal ? 'Rejecting...' : 'Reject'}
+                {processingId === showRejectModal ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Rejecting...
+                  </>
+                ) : (
+                  'Reject Application'
+                )}
               </button>
             </div>
           </div>
@@ -515,24 +528,24 @@ export default function Applications() {
 
       {/* Add Psychologist Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl p-6 max-w-2xl w-full my-8">
-            <div className="flex items-center justify-between mb-6">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl my-8 animate-in fade-in zoom-in duration-200">
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-red-100 rounded-lg">
                   <UserPlus className="w-5 h-5 text-red-600" />
                 </div>
-                <h2 className="text-lg font-bold">Add New Psychologist</h2>
+                <h2 className="text-lg font-bold text-gray-900">Add New Psychologist</h2>
               </div>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg"
+                className="p-2 hover:bg-gray-200/50 rounded-lg transition-colors text-gray-500"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             
-            <form onSubmit={handleAddPsychologist} className="space-y-4">
+            <form onSubmit={handleAddPsychologist} className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
@@ -541,7 +554,7 @@ export default function Applications() {
                     required
                     value={newPsychologist.displayName}
                     onChange={(e) => setNewPsychologist(prev => ({ ...prev, displayName: e.target.value }))}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all outline-none"
                     placeholder="Dr. John Doe"
                   />
                 </div>
@@ -552,7 +565,7 @@ export default function Applications() {
                     required
                     value={newPsychologist.email}
                     onChange={(e) => setNewPsychologist(prev => ({ ...prev, email: e.target.value }))}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all outline-none"
                     placeholder="doctor@rahatek.dz"
                   />
                 </div>
@@ -562,7 +575,7 @@ export default function Applications() {
                     type="tel"
                     value={newPsychologist.phone}
                     onChange={(e) => setNewPsychologist(prev => ({ ...prev, phone: e.target.value }))}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all outline-none"
                     placeholder="+213 XX XXX XXXX"
                   />
                 </div>
@@ -573,7 +586,7 @@ export default function Applications() {
                     required
                     value={newPsychologist.title}
                     onChange={(e) => setNewPsychologist(prev => ({ ...prev, title: e.target.value }))}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all outline-none"
                     placeholder="Clinical Psychologist"
                   />
                 </div>
@@ -583,7 +596,7 @@ export default function Applications() {
                     type="text"
                     value={newPsychologist.licenseNumber}
                     onChange={(e) => setNewPsychologist(prev => ({ ...prev, licenseNumber: e.target.value }))}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all outline-none"
                     placeholder="PSY-XXXXX"
                   />
                 </div>
@@ -594,7 +607,7 @@ export default function Applications() {
                     min="0"
                     value={newPsychologist.yearsExperience}
                     onChange={(e) => setNewPsychologist(prev => ({ ...prev, yearsExperience: parseInt(e.target.value) || 0 }))}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all outline-none"
                   />
                 </div>
               </div>

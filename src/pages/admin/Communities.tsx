@@ -336,10 +336,10 @@ export default function Communities() {
 
       {/* Add/Edit Modal */}
       {(showAddModal || editingCommunity) && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl p-6 max-w-lg w-full my-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-8 animate-in fade-in zoom-in duration-200">
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+              <h2 className="text-lg font-bold text-gray-900">
                 {editingCommunity ? 'Edit Community' : 'Create Community'}
               </h2>
               <button
@@ -348,13 +348,13 @@ export default function Communities() {
                   setEditingCommunity(null);
                   resetForm();
                 }}
-                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg"
+                className="p-2 hover:bg-gray-200/50 rounded-lg transition-colors text-gray-500"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             
-            <form onSubmit={editingCommunity ? handleUpdate : handleCreate} className="space-y-4">
+            <form onSubmit={editingCommunity ? handleUpdate : handleCreate} className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Community Name *</label>
                 <input
@@ -362,7 +362,7 @@ export default function Communities() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all outline-none"
                   placeholder="Anxiety Support Group"
                 />
               </div>
@@ -372,7 +372,7 @@ export default function Communities() {
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 min-h-[100px]"
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 min-h-[100px] transition-all outline-none"
                   placeholder="A safe space for sharing experiences..."
                 />
               </div>
@@ -382,7 +382,7 @@ export default function Communities() {
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all outline-none"
                 >
                   {categories.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
@@ -395,12 +395,12 @@ export default function Communities() {
                 <textarea
                   value={formData.rules}
                   onChange={(e) => setFormData(prev => ({ ...prev, rules: e.target.value }))}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 min-h-[80px]"
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-red-500 min-h-[80px] transition-all outline-none"
                   placeholder="Be respectful&#10;No spam&#10;Keep discussions supportive"
                 />
               </div>
               
-              <label className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl cursor-pointer">
+              <label className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                 <input
                   type="checkbox"
                   checked={formData.isPrivate}
@@ -424,14 +424,14 @@ export default function Communities() {
                     setEditingCommunity(null);
                     resetForm();
                   }}
-                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 font-medium"
+                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 font-medium transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={processingId === 'new' || processingId === editingCommunity?.id}
-                  className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-600/20 transition-colors"
                 >
                   {(processingId === 'new' || processingId === editingCommunity?.id) ? (
                     <>
@@ -450,8 +450,8 @@ export default function Communities() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full animate-in fade-in zoom-in duration-200">
             <div className="text-center">
               <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
                 <Trash2 className="w-6 h-6 text-red-600" />
@@ -461,16 +461,21 @@ export default function Communities() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowDeleteConfirm(null)}
-                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 font-medium"
+                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 font-medium transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleDelete(showDeleteConfirm)}
                   disabled={processingId === showDeleteConfirm}
-                  className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 font-medium disabled:opacity-50"
+                  className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 font-medium transition-colors disabled:opacity-50 shadow-lg shadow-red-600/20"
                 >
-                  {processingId === showDeleteConfirm ? 'Deleting...' : 'Delete'}
+                  {processingId === showDeleteConfirm ? (
+                    <span className="flex items-center justify-center gap-2">
+                       <Loader2 className="w-4 h-4 animate-spin" />
+                       Deleting...
+                    </span>
+                  ) : 'Delete'}
                 </button>
               </div>
             </div>

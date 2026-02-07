@@ -367,10 +367,10 @@ export default function Notifications() {
 
       {/* Compose Modal */}
       {showComposeModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl p-6 max-w-lg w-full my-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold">Compose Notification</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-8 animate-in fade-in zoom-in duration-200">
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+              <h2 className="text-lg font-bold text-gray-900">Compose Notification</h2>
               <button
                 onClick={() => {
                   setShowComposeModal(false);
@@ -382,7 +382,7 @@ export default function Notifications() {
               </button>
             </div>
             
-            <form onSubmit={(e) => handleCreate(e, false)} className="space-y-4">
+            <form onSubmit={(e) => handleCreate(e, false)} className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
                 <input
@@ -469,14 +469,14 @@ export default function Notifications() {
                     setShowComposeModal(false);
                     resetForm();
                   }}
-                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 font-medium"
+                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 font-medium transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={processingId === 'new'}
-                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 font-medium disabled:opacity-50"
+                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 font-medium disabled:opacity-50 transition-colors"
                 >
                   Save as Draft
                 </button>
@@ -484,14 +484,14 @@ export default function Notifications() {
                   type="button"
                   onClick={(e) => handleCreate(e as unknown as React.FormEvent, true)}
                   disabled={processingId === 'new'}
-                  className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-600/20 transition-colors"
                 >
                   {processingId === 'new' ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
-                      Send Now
+                      {formData.scheduledAt ? 'Schedule' : 'Send'}
                     </>
                   )}
                 </button>
