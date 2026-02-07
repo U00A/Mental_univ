@@ -9,7 +9,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { getAppointments } from '@/lib/firestore';
+import { getAppointments, getUserData } from '@/lib/firestore';
 
 interface Patient {
   id: string;
@@ -57,7 +57,27 @@ export default function Patients() {
           }
         });
         
-        setPatients(Array.from(patientMap.values()));
+        
+        // Fetch user details for each unique patient
+        const patientDetails = await Promise.all(
+          Array.from(patientMap.values()).map(async (p) => {
+            try {
+              const userData = await getUserData(p.id);
+              if (userData) {
+                return {
+                  ...p,
+                  email: (userData as unknown as { email: string }).email,
+                  // photoURL: (userData as unknown as { photoURL?: string }).photoURL
+                };
+              }
+            } catch (err) {
+              console.error(`Failed to fetch user data for ${p.id}`, err);
+            }
+            return p;
+          })
+        );
+
+        setPatients(patientDetails);
       } catch (error) {
         console.error('Error fetching patients:', error);
       } finally {

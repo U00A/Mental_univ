@@ -49,15 +49,7 @@ export default function PsychologistDashboard() {
   const [upcomingAppointments, setUpcomingAppointments] = useState<Appointment[]>([]);
 
   // Mock data for the chart
-  const activityData = [
-    { name: 'Mon', sessions: 4 },
-    { name: 'Tue', sessions: 6 },
-    { name: 'Wed', sessions: 5 },
-    { name: 'Thu', sessions: 8 },
-    { name: 'Fri', sessions: 6 },
-    { name: 'Sat', sessions: 3 },
-    { name: 'Sun', sessions: 0 },
-  ];
+  const [activityData, setActivityData] = useState<{ name: string; sessions: number }[]>([]);
 
   const fetchDashboardData = useCallback(async () => {
     if (!user) return;
@@ -72,12 +64,33 @@ export default function PsychologistDashboard() {
       const completed = appointments.filter(a => a.status === 'completed');
       const uniquePatients = new Set(appointments.map(a => a.studentId));
 
+      const earnings = completed.reduce((sum, a) => sum + (a.price || 0), 0);
+
+      // Simple activity data: Count sessions per day for the last 7 days
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const last7Days = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (6 - i));
+        return d;
+      });
+
+      const chartData = last7Days.map(date => {
+        const count = appointments.filter(a => {
+            const aDate = new Date(a.date);
+            return aDate.getDate() === date.getDate() && 
+                   aDate.getMonth() === date.getMonth() && 
+                   aDate.getFullYear() === date.getFullYear();
+        }).length;
+        return { name: days[date.getDay()], sessions: count };
+      });
+      setActivityData(chartData);
+
       setStats({
         totalPatients: uniquePatients.size,
         upcomingSessions: upcoming.length,
         completedSessions: completed.length,
-        earnings: completed.length * 75,
-        rating: 4.8
+        earnings,
+        rating: (profile as unknown as { rating: number })?.rating || 0
       });
       
       setUpcomingAppointments(upcoming.slice(0, 4));
@@ -86,7 +99,7 @@ export default function PsychologistDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, profile]);
 
   useEffect(() => {
     fetchDashboardData();

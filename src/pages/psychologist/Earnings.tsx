@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -18,6 +18,8 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
+import { useAuth } from '@/contexts/AuthContext';
+import { getAppointments } from '@/lib/firestore';
 
 interface Transaction {
   id: string;
@@ -31,29 +33,86 @@ interface Transaction {
 export default function Earnings() {
   const [period, setPeriod] = useState<'week' | 'month' | 'year'>('month');
 
-  const earningsData = [
-    { name: 'Jan', earnings: 2400 },
-    { name: 'Feb', earnings: 1800 },
-    { name: 'Mar', earnings: 3200 },
-    { name: 'Apr', earnings: 2800 },
-    { name: 'May', earnings: 3600 },
-    { name: 'Jun', earnings: 4200 },
-  ];
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [earningsData, setEarningsData] = useState<{ name: string; earnings: number }[]>([]);
+  const [stats, setStats] = useState({
+    totalEarnings: 0,
+    thisMonth: 0,
+    pendingPayouts: 0,
+    avgPerSession: 0
+  });
 
-  const transactions: Transaction[] = [
-    { id: '1', patientName: 'Sarah Connor', date: '2024-01-15', amount: 150, status: 'completed', type: 'session' },
-    { id: '2', patientName: 'John Smith', date: '2024-01-14', amount: 150, status: 'completed', type: 'session' },
-    { id: '3', patientName: 'Emily Davis', date: '2024-01-14', amount: 500, status: 'completed', type: 'package' },
-    { id: '4', patientName: 'Michael Brown', date: '2024-01-13', amount: 150, status: 'pending', type: 'session' },
-    { id: '5', patientName: 'Lisa Johnson', date: '2024-01-12', amount: 150, status: 'refunded', type: 'session' },
-  ];
+  useEffect(() => {
+    async function fetchData() {
+      if (!user) return;
+      try {
+        const appointments = await getAppointments(user.uid, 'psychologist');
+        
+        // Calculate Stats
+        const completed = appointments.filter(a => a.status === 'completed');
+        const total = completed.reduce((sum, a) => sum + (a.price || 0), 0);
+        
+        const now = new Date();
+        const thisMonthTotal = completed
+            .filter(a => {
+                const d = new Date(a.date);
+                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+            })
+            .reduce((sum, a) => sum + (a.price || 0), 0);
 
-  const stats = {
-    totalEarnings: 18200,
-    thisMonth: 4200,
-    pendingPayouts: 450,
-    avgPerSession: 142
-  };
+        // Chart Data (Last 6 Months)
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const chartData = [];
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const monthIdx = d.getMonth();
+            const year = d.getFullYear();
+            const monthEarnings = completed
+                .filter(a => {
+                    const ad = new Date(a.date);
+                    return ad.getMonth() === monthIdx && ad.getFullYear() === year;
+                })
+                .reduce((sum, a) => sum + (a.price || 0), 0);
+            chartData.push({ name: months[monthIdx], earnings: monthEarnings });
+        }
+        setEarningsData(chartData);
+
+        // Transactions List
+        const txList = appointments.map(a => ({
+            id: a.id || '',
+            patientName: a.studentName,
+            date: new Date(a.date).toLocaleDateString(),
+            amount: a.price || 0,
+            status: a.status === 'cancelled' ? 'refunded' : (a.status === 'confirmed' ? 'pending' : 'completed'), // Simplified mapping
+            type: 'session'
+        } as Transaction));
+        setTransactions(txList);
+
+        setStats({
+            totalEarnings: total,
+            thisMonth: thisMonthTotal,
+            pendingPayouts: 0, // Mock for now
+            avgPerSession: completed.length ? Math.round(total / completed.length) : 0
+        });
+
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [user]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-fade-in">

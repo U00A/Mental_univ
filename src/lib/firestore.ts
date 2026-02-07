@@ -64,8 +64,8 @@ export interface Appointment {
   preSessionConcerns?: string;
   goals?: string;
   followUpNotes?: string;
-  homework?: string[];
   createdAt: Date;
+  price?: number;
 }
 
 export type MessageStatus = 'sending' | 'sent' | 'delivered' | 'read';
@@ -249,6 +249,7 @@ export async function getUserData(uid: string) {
 export async function createAppointment(appointment: Omit<Appointment, 'id' | 'createdAt'>): Promise<string> {
   const docRef = await addDoc(collection(db, 'appointments'), {
     ...appointment,
+    price: appointment.price || 0,
     date: Timestamp.fromDate(appointment.date),
     createdAt: Timestamp.now(),
   });
