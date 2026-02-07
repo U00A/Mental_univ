@@ -89,6 +89,66 @@ export default function WellnessCenter() {
     return (total / sleepEntries.length).toFixed(1);
   };
 
+  // Calculate consecutive days with sleep entries
+  const getDayStreak = () => {
+    if (sleepEntries.length === 0) return 0;
+    
+    // Sort entries by date (newest first)
+    const sortedEntries = [...sleepEntries].sort((a, b) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    
+    let streak = 0;
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    
+    for (const entry of sortedEntries) {
+      const entryDate = new Date(entry.date);
+      entryDate.setHours(0, 0, 0, 0);
+      
+      const diffDays = Math.floor((currentDate.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === streak) {
+        streak++;
+      } else if (diffDays > streak) {
+        break;
+      }
+    }
+    
+    return streak;
+  };
+
+  // Calculate week-over-week improvement
+  const getWeekComparison = () => {
+    if (sleepEntries.length < 2) return { value: 0, trend: 'neutral' as const };
+    
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+    
+    const thisWeekEntries = sleepEntries.filter(e => new Date(e.date) >= oneWeekAgo);
+    const lastWeekEntries = sleepEntries.filter(e => {
+      const date = new Date(e.date);
+      return date >= twoWeeksAgo && date < oneWeekAgo;
+    });
+    
+    if (thisWeekEntries.length === 0 || lastWeekEntries.length === 0) {
+      return { value: 0, trend: 'neutral' as const };
+    }
+    
+    const thisWeekAvgQuality = thisWeekEntries.reduce((acc, e) => acc + qualityConfig[e.quality].score, 0) / thisWeekEntries.length;
+    const lastWeekAvgQuality = lastWeekEntries.reduce((acc, e) => acc + qualityConfig[e.quality].score, 0) / lastWeekEntries.length;
+    
+    const percentChange = lastWeekAvgQuality > 0 
+      ? Math.round(((thisWeekAvgQuality - lastWeekAvgQuality) / lastWeekAvgQuality) * 100)
+      : 0;
+    
+    return {
+      value: percentChange,
+      trend: percentChange > 0 ? 'up' as const : percentChange < 0 ? 'down' as const : 'neutral' as const
+    };
+  };
+
   const handleSave = async () => {
     if (!user) return;
     
@@ -177,7 +237,7 @@ export default function WellnessCenter() {
                 <Sun className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-text">7</p>
+                <p className="text-2xl font-bold text-text">{getDayStreak()}</p>
                 <p className="text-xs text-text-muted">Day Streak</p>
               </div>
             </div>
@@ -189,7 +249,9 @@ export default function WellnessCenter() {
                 <TrendingUp className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-text">+12%</p>
+                <p className={`text-2xl font-bold ${getWeekComparison().trend === 'up' ? 'text-green-600' : getWeekComparison().trend === 'down' ? 'text-red-600' : 'text-text'}`}>
+                  {getWeekComparison().value > 0 ? '+' : ''}{getWeekComparison().value}%
+                </p>
                 <p className="text-xs text-text-muted">vs Last Week</p>
               </div>
             </div>
