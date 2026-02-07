@@ -181,7 +181,7 @@ export default function Psychologists() {
               {displayedPsychologists.map((psych) => (
                 <Link 
                   key={psych.uid} 
-                  to={`/psychologist/${psych.uid}`}
+                  to={`/student/psychologists/${psych.uid}`}
                   className="card card-glass card-hover border-none group flex flex-col relative overflow-hidden"
                 >
                   {/* Favorite Button */}
