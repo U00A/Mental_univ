@@ -68,14 +68,46 @@ import PsychologistSettings from '@/pages/psychologist/Settings';
 import PsychologistProfilePreview from '@/pages/psychologist/Profile';
 
 // Shared Components
-function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, allowedRole?: string }) {
+// ProtectedRoute: Blocks admins from accessing student/psychologist portals
+function ProtectedRoute({ children, allowedRole, blockAdmin = false }: { 
+  children: React.ReactNode, 
+  allowedRole?: string,
+  blockAdmin?: boolean 
+}) {
   const { user, profile, loading } = useAuth();
   
   if (loading) return <div className="h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
   if (!user) return <Navigate to="/login" replace />;
-  if (allowedRole && profile?.role !== allowedRole && profile?.role !== 'admin') { // Admins can access everything usually, or handle stricter
-      return <Navigate to="/dashboard" replace />;
+  
+  // Admins should ONLY access admin routes - redirect to admin dashboard
+  if (profile?.role === 'admin' && blockAdmin) {
+    return <Navigate to="/admin/dashboard" replace />;
   }
+  
+  // Check role permission
+  if (allowedRole && profile?.role !== allowedRole) {
+    // Redirect to appropriate dashboard based on role
+    if (profile?.role === 'admin') return <Navigate to="/admin/dashboard" replace />;
+    if (profile?.role === 'psychologist') return <Navigate to="/psychologist/dashboard" replace />;
+    return <Navigate to="/student/dashboard" replace />;
+  }
+  
+  return <>{children}</>;
+}
+
+// AdminOnlyRoute: Strictly for admin users only
+function AdminOnlyRoute({ children }: { children: React.ReactNode }) {
+  const { user, profile, loading } = useAuth();
+  
+  if (loading) return <div className="h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
+  if (!user) return <Navigate to="/login" replace />;
+  
+  // Only admins allowed
+  if (profile?.role !== 'admin') {
+    if (profile?.role === 'psychologist') return <Navigate to="/psychologist/dashboard" replace />;
+    return <Navigate to="/student/dashboard" replace />;
+  }
+  
   return <>{children}</>;
 }
 
@@ -83,19 +115,15 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   const { user, profile } = useAuth();
   
   if (user && profile) {
-    if (profile.role === 'psychologist') {
-      return <Navigate to="/psychologist/dashboard" replace />;
-    }
+    // Redirect to role-specific dashboard
     if (profile.role === 'admin') {
       return <Navigate to="/admin/dashboard" replace />;
     }
+    if (profile.role === 'psychologist') {
+      return <Navigate to="/psychologist/dashboard" replace />;
+    }
     return <Navigate to="/student/dashboard" replace />;
   }
-  
-  // If user is logged in but profile not loaded yet, wait (or show loading). 
-  // However, AuthContext loading state usually handles this at app level if we wanted.
-  // For now, if just 'user' exists but no profile, let them stay or redirect to a default.
-  // Better to rely on Profile being loaded.
   
   return <>{children}</>;
 }
@@ -119,11 +147,11 @@ export default function App() {
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
             
-            {/* Onboarding (Protected but outside layout) */}
-            <Route path="/student/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+            {/* Onboarding (Protected but outside layout - blocked for admins) */}
+            <Route path="/student/onboarding" element={<ProtectedRoute blockAdmin><Onboarding /></ProtectedRoute>} />
 
-            {/* Student Portal */}
-            <Route path="/student" element={<ProtectedRoute><StudentLayout /></ProtectedRoute>}>
+            {/* Student Portal - Blocked for admins */}
+            <Route path="/student" element={<ProtectedRoute blockAdmin><StudentLayout /></ProtectedRoute>}>
               <Route index element={<Navigate to="/student/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
               
@@ -168,8 +196,8 @@ export default function App() {
               <Route path="billing" element={<PlaceholderPage title="Billing & Payments" />} />
             </Route>
 
-            {/* Psychologist Portal */}
-            <Route path="/psychologist" element={<ProtectedRoute allowedRole="psychologist"><PsychologistLayout /></ProtectedRoute>}>
+            {/* Psychologist Portal - Blocked for admins */}
+            <Route path="/psychologist" element={<ProtectedRoute allowedRole="psychologist" blockAdmin><PsychologistLayout /></ProtectedRoute>}>
                <Route index element={<Navigate to="/psychologist/dashboard" replace />} />
                <Route path="dashboard" element={<PsychologistDashboard />} />
                <Route path="patients" element={<PsychologistPatients />} />
@@ -181,8 +209,8 @@ export default function App() {
                <Route path="profile" element={<PsychologistProfilePreview />} />
             </Route>
 
-            {/* Admin Portal */}
-            <Route path="/admin" element={<ProtectedRoute allowedRole="admin"><AdminLayout /></ProtectedRoute>}>
+            {/* Admin Portal - Admin Only */}
+            <Route path="/admin" element={<AdminOnlyRoute><AdminLayout /></AdminOnlyRoute>}>
               <Route index element={<Navigate to="/admin/dashboard" replace />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="users" element={<AdminUsers />} />
