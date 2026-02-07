@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" fill="none">
+    <!-- Rahatek Logo - Growing seedling with embrace -->
+
+    <!-- Icon: Abstract lotus/seedling with embrace curve -->
+    <g transform="translate(10, 5)">
+        <!-- Base embrace curve -->
+        <path d="M5 45 Q25 35 25 20 Q25 10 20 5" stroke="#2D6A4F" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M45 45 Q25 35 25 20 Q25 10 30 5" stroke="#2D6A4F" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+        <!-- Central growing leaf/seedling -->
+        <ellipse cx="25" cy="18" rx="8" ry="15" fill="#2D6A4F"/>
+        <ellipse cx="25" cy="18" rx="5" ry="10" fill="#95D5B2"/>
+
+        <!-- Small accent heart/dot -->
+        <circle cx="25" cy="12" r="3" fill="#D84A4A"/>
+
+        <!-- Stem -->
+        <line x1="25" y1="33" x2="25" y2="48" stroke="#2D6A4F" stroke-width="3" stroke-linecap="round"/>
+    </g>
+
+    <!-- Text: Rahatek -->
+    <text x="70" y="40" font-family="Outfit, Poppins, sans-serif" font-size="28" font-weight="600" fill="#2D6A4F">
+    Rahatek
+    </text>
+
+    <!-- Arabic subtitle -->
+    <text x="72" y="54" font-family="Arial, sans-serif" font-size="10" fill="#95D5B2">
+    راحتك
+    </text>
+</svg>
