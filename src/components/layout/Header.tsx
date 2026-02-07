@@ -47,7 +47,7 @@ export default function Header() {
               </button>
             )}
             
-            <Link to="/dashboard" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-2">
               <img src="/images/logo.svg" alt="MindWell" className="h-10" />
               <span className="text-xl font-semibold text-text hidden sm:block">MindWell</span>
             </Link>
