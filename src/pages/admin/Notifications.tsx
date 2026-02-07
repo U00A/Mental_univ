@@ -367,8 +367,8 @@ export default function Notifications() {
 
       {/* Compose Modal */}
       {showComposeModal && (
-        <div className="fixed inset-0 bg-white/40 backdrop-blur-xl flex items-center justify-center z-50 p-4 overflow-y-auto animate-in fade-in duration-300">
-          <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] w-full max-w-lg my-8 transform transition-all animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 bg-white/50 backdrop-blur-2xl flex items-center justify-center z-50 p-4 overflow-y-auto animate-in fade-in duration-300">
+          <div className="bg-white/90 backdrop-blur-3xl border border-white/50 rounded-[2.5rem] shadow-[0_32px_128px_-12px_rgba(0,0,0,0.15)] w-full max-w-2xl my-8 transform transition-all animate-in zoom-in-95 duration-300">
             <div className="px-8 py-6 border-b border-gray-100/50 flex items-center justify-between">
               <h2 className="text-xl font-bold text-gray-900">Compose Notification</h2>
               <button

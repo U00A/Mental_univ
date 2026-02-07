@@ -275,8 +275,8 @@ export default function UsersPage() {
 
       {/* Add User Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-white/40 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] w-full max-w-md overflow-hidden transform transition-all animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 bg-white/50 backdrop-blur-2xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="bg-white/90 backdrop-blur-3xl border border-white/50 rounded-[2.5rem] shadow-[0_32px_128px_-12px_rgba(0,0,0,0.15)] w-full max-w-2xl overflow-hidden transform transition-all animate-in zoom-in-95 duration-300">
             <div className="px-8 py-6 border-b border-gray-100/50 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-red-50 rounded-2xl">

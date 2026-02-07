@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { ToastProvider } from '@/components/ui/Toast';
-import { Analytics } from '@vercel/analytics/react';
+// import { Analytics } from '@vercel/analytics/react';
 
 // Layouts
 import StudentLayout from '@/layouts/StudentLayout';
@@ -229,7 +229,7 @@ export default function App() {
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <Analytics />
+            {/* <Analytics /> */}
         </BrowserRouter>
       </ToastProvider>
     </AuthProvider>

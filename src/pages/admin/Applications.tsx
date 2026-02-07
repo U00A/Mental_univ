@@ -346,10 +346,10 @@ export default function Applications() {
                   </div>
                   <button 
                     onClick={() => setSelectedApp(app)}
-                    className="text-sm font-medium text-red-600 hover:text-red-700 flex items-center gap-1"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-all shadow-lg shadow-red-600/20 active:scale-[0.98]"
                   >
                     Review Application
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown className="w-5 h-5" />
                   </button>
                 </div>
               </div>
@@ -359,8 +359,8 @@ export default function Applications() {
       </div>
 
       {selectedApp && (
-        <div className="fixed inset-0 bg-white/40 backdrop-blur-xl flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
-          <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 bg-white/50 backdrop-blur-2xl flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
+          <div className="bg-white/90 backdrop-blur-3xl border border-white/50 rounded-[2.5rem] shadow-[0_32px_128px_-12px_rgba(0,0,0,0.15)] w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all animate-in zoom-in-95 duration-300">
             <div className="px-8 py-6 border-b border-gray-100/50 flex items-center justify-between sticky top-0 bg-white/20 backdrop-blur-md z-10">
               <h2 className="text-xl font-bold text-gray-900">Application Details</h2>
               <button 
@@ -476,8 +476,8 @@ export default function Applications() {
 
       {/* Reject Modal */}
       {showRejectModal && (
-        <div className="fixed inset-0 bg-white/40 backdrop-blur-xl flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
-          <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] p-8 max-w-md w-full transform transition-all animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 bg-white/50 backdrop-blur-2xl flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
+          <div className="bg-white/90 backdrop-blur-3xl border border-white/50 rounded-[2.5rem] shadow-[0_32px_128px_-12px_rgba(0,0,0,0.15)] p-8 max-w-2xl w-full transform transition-all animate-in zoom-in-95 duration-300">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 bg-red-100 rounded-xl">
                 <AlertCircle className="w-6 h-6 text-red-600" />
@@ -528,24 +528,24 @@ export default function Applications() {
 
       {/* Add Psychologist Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-white/40 backdrop-blur-xl flex items-center justify-center z-50 p-4 overflow-y-auto animate-in fade-in duration-300">
-          <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] w-full max-w-2xl my-8 transform transition-all animate-in zoom-in-95 duration-300">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+        <div className="fixed inset-0 bg-white/50 backdrop-blur-2xl flex items-center justify-center z-50 p-4 overflow-y-auto animate-in fade-in duration-300">
+          <div className="bg-white/90 backdrop-blur-3xl border border-white/50 rounded-[2.5rem] shadow-[0_32px_128px_-12px_rgba(0,0,0,0.15)] w-full max-w-4xl my-8 transform transition-all animate-in zoom-in-95 duration-300">
+            <div className="px-8 py-6 border-b border-gray-100/50 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-red-100 rounded-lg">
-                  <UserPlus className="w-5 h-5 text-red-600" />
+                <div className="p-2.5 bg-red-50 rounded-2xl">
+                  <UserPlus className="w-6 h-6 text-red-600" />
                 </div>
-                <h2 className="text-lg font-bold text-gray-900">Add New Psychologist</h2>
+                <h2 className="text-xl font-bold text-gray-900">Add New Psychologist</h2>
               </div>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="p-2 hover:bg-gray-200/50 rounded-lg transition-colors text-gray-500"
+                className="p-2 hover:bg-gray-100/50 rounded-xl transition-colors text-gray-400 hover:text-gray-600"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
             
-            <form onSubmit={handleAddPsychologist} className="p-6 space-y-4">
+            <form onSubmit={handleAddPsychologist} className="p-8 space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
