@@ -26,7 +26,6 @@ export default function StudentLayout() {
   const [isPanicOpen, setIsPanicOpen] = useState(false);
 
   const navigation = [
-    { name: 'Home', href: '/', icon: Home },
     { name: 'Dashboard', href: '/student/dashboard', icon: LayoutDashboard },
     { name: 'Wellness', href: '/student/wellness', icon: Activity },
     { name: 'Psychologists', href: '/student/psychologists', icon: Users },

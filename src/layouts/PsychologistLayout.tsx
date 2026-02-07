@@ -10,8 +10,7 @@ import {
   Menu,
   LogOut,
   User,
-  Bell,
-  Home
+  Bell
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import UserNav from '@/components/layout/UserNav';
@@ -23,7 +22,6 @@ export default function PsychologistLayout() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const navigation = [
-    { name: 'Home', href: '/', icon: Home },
     { name: 'Dashboard', href: '/psychologist/dashboard', icon: LayoutDashboard },
     { name: 'My Patients', href: '/psychologist/patients', icon: Users },
     { name: 'Calendar', href: '/psychologist/calendar', icon: Calendar },
