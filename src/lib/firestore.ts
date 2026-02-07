@@ -35,6 +35,10 @@ export interface Psychologist {
   location?: string;
   sessionPrice?: number;
   languages?: string[];
+  verificationStatus?: 'pending' | 'approved' | 'rejected';
+  rejectionReason?: string;
+  verifiedAt?: any;
+  verifiedBy?: string;
 }
 
 export interface Resource {

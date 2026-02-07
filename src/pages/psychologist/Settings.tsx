@@ -62,6 +62,9 @@ export default function PsychologistSettings() {
     }
   };
 
+  const isVerified = formData.verificationStatus === 'approved';
+  const isRejected = formData.verificationStatus === 'rejected';
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -79,13 +82,36 @@ export default function PsychologistSettings() {
         </div>
         <button 
           onClick={handleSubmit} 
-          disabled={saving}
-          className="btn btn-primary flex items-center gap-2"
+          disabled={saving || !isVerified}
+          className="btn btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Save Changes
         </button>
       </div>
+
+      {/* Verification Status Banner */}
+      {!isVerified && (
+        <div className={`p-4 rounded-xl border ${
+          isRejected ? 'bg-red-50 border-red-200 text-red-800' : 'bg-yellow-50 border-yellow-200 text-yellow-800'
+        }`}>
+          <div className="flex items-start gap-3">
+            <div className={`p-2 rounded-full ${isRejected ? 'bg-red-100' : 'bg-yellow-100'}`}>
+               {isRejected ? <User className="w-5 h-5" /> : <Clock className="w-5 h-5" />}
+            </div>
+            <div>
+              <h3 className="font-bold mb-1">
+                {isRejected ? 'Application Rejected' : 'Verification Pending'}
+              </h3>
+              <p className="text-sm opacity-90">
+                {isRejected 
+                  ? `Your application was rejected. Reason: ${formData.rejectionReason || 'Not specified'}. Please contact support.`
+                  : 'Your profile is currently under review by the administration. You will be able to edit your details once approved.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-8">
         
@@ -115,10 +141,11 @@ export default function PsychologistSettings() {
             <div className="flex items-center justify-between">
                 <span className="text-sm text-blue-700">Accepting new patients</span>
                 <button 
-                    onClick={() => handleChange('isAvailable', !formData.isAvailable)}
+                    onClick={() => isVerified && handleChange('isAvailable', !formData.isAvailable)}
+                    disabled={!isVerified}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                         formData.isAvailable ? 'bg-primary' : 'bg-gray-300'
-                    }`}
+                    } ${!isVerified ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                     <span 
                         className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -144,9 +171,10 @@ export default function PsychologistSettings() {
                         <label className="label">Full Name</label>
                         <input 
                             type="text" 
-                            className="input" 
+                            className="input disabled:opacity-60 disabled:bg-gray-50" 
                             value={formData.displayName || ''} 
                             onChange={(e) => handleChange('displayName', e.target.value)}
+                            disabled={!isVerified}
                         />
                     </div>
                     <div className="grid md:grid-cols-2 gap-4">
@@ -154,20 +182,22 @@ export default function PsychologistSettings() {
                             <label className="label">Professional Title</label>
                             <input 
                                 type="text" 
-                                className="input" 
+                                className="input disabled:opacity-60 disabled:bg-gray-50" 
                                 placeholder="e.g. Clinical Psychologist"
                                 value={formData.title || ''} 
                                 onChange={(e) => handleChange('title', e.target.value)}
+                                disabled={!isVerified}
                             />
                         </div>
                         <div>
                             <label className="label">Location</label>
                             <input 
                                 type="text" 
-                                className="input" 
+                                className="input disabled:opacity-60 disabled:bg-gray-50" 
                                 placeholder="e.g. Algiers"
                                 value={formData.location || ''} 
                                 onChange={(e) => handleChange('location', e.target.value)}
+                                disabled={!isVerified}
                             />
                         </div>
                     </div>
@@ -177,10 +207,11 @@ export default function PsychologistSettings() {
                             <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                             <input 
                                 type="text" 
-                                className="input pl-10" 
+                                className="input pl-10 disabled:opacity-60 disabled:bg-gray-50" 
                                 placeholder="English, Arabic, French (comma separated)"
                                 value={formData.languages?.join(', ') || ''} 
                                 onChange={(e) => handleArrayChange('languages', e.target.value)}
+                                disabled={!isVerified}
                             />
                         </div>
                     </div>
@@ -197,19 +228,21 @@ export default function PsychologistSettings() {
                     <div>
                         <label className="label">Bio</label>
                         <textarea 
-                            className="input min-h-[120px]" 
+                            className="input min-h-[120px] disabled:opacity-60 disabled:bg-gray-50" 
                             placeholder="Tell students about your experience and approach..."
                             value={formData.bio || ''}
                             onChange={(e) => handleChange('bio', e.target.value)}
+                            disabled={!isVerified}
                         />
                     </div>
                     <div>
                         <label className="label">Qualifications</label>
                         <textarea 
-                            className="input" 
+                            className="input disabled:opacity-60 disabled:bg-gray-50" 
                             placeholder="PhD in Psychology, Licensed Therapist..."
                             value={formData.qualifications || ''}
                             onChange={(e) => handleChange('qualifications', e.target.value)}
+                            disabled={!isVerified}
                         />
                     </div>
                     <div className="grid md:grid-cols-2 gap-4">
@@ -219,9 +252,10 @@ export default function PsychologistSettings() {
                                 <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                                 <input 
                                     type="number" 
-                                    className="input pl-10" 
+                                    className="input pl-10 disabled:opacity-60 disabled:bg-gray-50" 
                                     value={formData.yearsExperience || 0} 
                                     onChange={(e) => handleChange('yearsExperience', parseInt(e.target.value) || 0)}
+                                    disabled={!isVerified}
                                 />
                             </div>
                         </div>
@@ -231,9 +265,10 @@ export default function PsychologistSettings() {
                                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                                 <input 
                                     type="number" 
-                                    className="input pl-10" 
+                                    className="input pl-10 disabled:opacity-60 disabled:bg-gray-50" 
                                     value={formData.sessionPrice || 0} 
                                     onChange={(e) => handleChange('sessionPrice', parseInt(e.target.value) || 0)}
+                                    disabled={!isVerified}
                                 />
                             </div>
                         </div>
@@ -242,10 +277,11 @@ export default function PsychologistSettings() {
                         <label className="label">Specializations</label>
                         <input 
                             type="text" 
-                            className="input" 
+                            className="input disabled:opacity-60 disabled:bg-gray-50" 
                             placeholder="Anxiety, Depression, Trauma (comma separated)"
                             value={formData.specializations?.join(', ') || ''} 
                             onChange={(e) => handleArrayChange('specializations', e.target.value)}
+                            disabled={!isVerified}
                         />
                         <p className="text-xs text-text-muted mt-1">Separate keywords with commas</p>
                     </div>

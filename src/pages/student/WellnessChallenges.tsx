@@ -3,10 +3,7 @@ import {
   Trophy, 
   Target, 
   Flame, 
-  CheckCircle2, 
-  Circle, 
   Zap, 
-  Calendar,
   Award,
   Moon,
   Loader2
@@ -15,9 +12,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getChallenges, joinChallenge, type Challenge } from '@/lib/firestore';
 
 export default function WellnessChallenges() {
-  const [completedTasks, setCompletedTasks] = useState<string[]>([]);
-
-
   const { user } = useAuth();
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,20 +62,7 @@ export default function WellnessChallenges() {
     }
   };
 
-  const dailyTasks = [
-    { id: 't1', title: 'Drink 8 glasses of water', xp: 50 },
-    { id: 't2', title: 'Take a 15-minute walk', xp: 100 },
-    { id: 't3', title: 'Write one journal entry', xp: 75 },
-    { id: 't4', title: 'Practice breathing exercise', xp: 50 },
-  ];
-
-  const toggleTask = (taskId: string) => {
-    if (completedTasks.includes(taskId)) {
-      setCompletedTasks(prev => prev.filter(id => id !== taskId));
-    } else {
-      setCompletedTasks(prev => [...prev, taskId]);
-    }
-  };
+  
 
   return (
     <div className="w-full relative overflow-hidden animate-fade-in">
@@ -92,35 +73,38 @@ export default function WellnessChallenges() {
             <h1 className="text-3xl font-bold text-text mb-2">Wellness Challenges</h1>
             <p className="text-text-muted">Build healthy habits and earn rewards.</p>
           </div>
+          {/* Placeholder for future gamification stats - currently hidden to avoid fake data */}
+          {/* 
           <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-100">
             <div className="flex items-center gap-2">
               <Flame className="w-5 h-5 text-orange-500" />
-              <span className="font-bold text-text">12 Day Streak</span>
+              <span className="font-bold text-text">0 Day Streak</span>
             </div>
             <div className="w-px h-6 bg-gray-200" />
             <div className="flex items-center gap-2">
               <Trophy className="w-5 h-5 text-yellow-500" />
-              <span className="font-bold text-text">Level 5</span>
+              <span className="font-bold text-text">Level 1</span>
             </div>
           </div>
+          */}
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Challenges Area */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-3 space-y-8">
             {/* Active Challenges */}
             <section>
               <h2 className="text-xl font-bold text-text mb-4 flex items-center gap-2">
                 <Target className="w-5 h-5 text-primary" />
                 Active Quests
               </h2>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {loading ? (
-                  <div className="col-span-2 flex justify-center py-12">
+                  <div className="col-span-3 flex justify-center py-12">
                     <Loader2 className="w-8 h-8 animate-spin text-primary" />
                   </div>
                 ) : challenges.length === 0 ? (
-                  <div className="col-span-2 text-center py-12 text-text-muted">
+                  <div className="col-span-3 text-center py-12 text-text-muted">
                     No active challenges found. Check back later!
                   </div>
                 ) : (
@@ -182,46 +166,12 @@ export default function WellnessChallenges() {
                 )}
               </div>
             </section>
-
-            {/* Daily Tasks */}
-            <section>
-              <h2 className="text-xl font-bold text-text mb-4 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-primary" />
-                Daily Goals
-              </h2>
-              <div className="card space-y-2">
-                {dailyTasks.map(task => {
-                  const isCompleted = completedTasks.includes(task.id);
-                  return (
-                    <button
-                      key={task.id}
-                      onClick={() => toggleTask(task.id)}
-                      className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
-                        isCompleted 
-                          ? 'bg-green-50/50' 
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={`transition-colors ${isCompleted ? 'text-green-500' : 'text-gray-300'}`}>
-                          {isCompleted ? <CheckCircle2 className="w-6 h-6" /> : <Circle className="w-6 h-6" />}
-                        </div>
-                        <span className={`font-medium transition-all ${isCompleted ? 'text-text-muted line-through' : 'text-text'}`}>
-                          {task.title}
-                        </span>
-                      </div>
-                      <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded-lg">
-                        +{task.xp} XP
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="lg:col-span-1 space-y-6">
+             {/* Gamification Sidebar - Hidden until real data is available */}
+            {/* 
             <div className="card bg-linear-to-br from-primary to-primary-dark text-white text-center py-8">
               <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
                 <Award className="w-10 h-10 text-white" />
@@ -244,6 +194,7 @@ export default function WellnessChallenges() {
                  ))}
                </div>
             </div>
+            */}
           </div>
         </div>
       </main>

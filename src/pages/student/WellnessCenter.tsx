@@ -183,13 +183,6 @@ export default function WellnessCenter() {
     quality: qualityConfig[entry.quality].score
   }));
 
-  const wellnessTips = [
-    { icon: '🌙', title: 'Consistent Schedule', text: 'Try to sleep and wake at the same time every day' },
-    { icon: '📱', title: 'Screen-Free Hour', text: 'Avoid screens 1 hour before bedtime' },
-    { icon: '☕', title: 'Limit Caffeine', text: 'No caffeine after 2 PM for better sleep' },
-    { icon: '🧘', title: 'Relaxation', text: 'Practice meditation or deep breathing before bed' },
-  ];
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -394,25 +387,6 @@ export default function WellnessCenter() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Wellness Tips */}
-            <div className="card">
-              <h3 className="font-semibold text-text mb-4 flex items-center gap-2">
-                <Sun className="w-5 h-5 text-primary" />
-                Sleep Tips
-              </h3>
-              <div className="space-y-3">
-                {wellnessTips.map((tip, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                    <span className="text-2xl">{tip.icon}</span>
-                    <div>
-                      <p className="font-medium text-text text-sm">{tip.title}</p>
-                      <p className="text-xs text-text-muted">{tip.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
             {/* Weekly Goal */}
             <div className="card bg-linear-to-br from-primary/5 to-purple-50">
               <h3 className="font-semibold text-text mb-3">Weekly Goal</h3>
