@@ -65,6 +65,7 @@ export interface Appointment {
   goals?: string;
   followUpNotes?: string;
   createdAt: Date;
+  homework?: string[];
   price?: number;
 }
 
